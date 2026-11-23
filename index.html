@@ -1,7 +1,7 @@
-<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EMILIAS DSCHUNGELCAMP</title><link rel="stylesheet" href="camp.css"><link rel="stylesheet" href="lichtung.css"><main><header><button id="homeLink"><span aria-hidden="true" class="home-icon">⌂</span> Lichtung</button></header>
-<section id="home"><h1>Emilias Dschungelcamp</h1><button id="dailyInvite" class="post-invite" hidden><span class="envelope" aria-hidden="true">✉</span><span><strong>Dschungelpost</strong><small id="dailyLabel"></small></span><span aria-hidden="true">›</span></button><div class="clearing"><aside role="img" aria-label="Emilia auf der Lichtung"></aside><button class="place tukan" id="missionLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#tukan"/></svg><span>TUKAN</span></button><button class="place frosch" id="frogLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#frosch"/></svg><span>FROSCH</span></button><button class="place affe" id="monkeyLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#affe"/></svg><span>AFFE</span></button><button class="place jaguar" id="catLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#jaguar"/></svg><span>JAGUAR</span></button><button class="place buch" id="bookLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#buch"/></svg><span>FORSCHERBUCH</span><small id="bookCount">0 / 4 TIERE</small></button></div><a class="parents" href="eltern.html">Elternbereich</a></section><section id="frog" hidden><aside aria-label="Emilia beim Frosch" role="img"></aside><small id="frogStep"></small><h1 id="frogTitle"></h1><p id="frogHint"></p><div id="frogTask"></div><div id="frogOptions"></div><button id="frogNext" disabled>Weiter</button></section><section id="book" hidden><aside role="img" aria-label="Emilia mit Forscherbuch" data-pose="book"></aside><div class="book-heading"><h1>Mein Forscherbuch</h1><p id="bookText"></p></div><h2>Meine Tierfreunde</h2><div id="finds"></div><h2>Meine Abzeichen</h2><div id="awards"></div><p id="bookGoal"></p><section class="post-album"><h2>Meine Dschungelpost</h2><p id="postTally"></p><div id="postStamps"></div></section></section>
+<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EMILIAS DSCHUNGELCAMP</title><link rel="stylesheet" href="camp.css"><link rel="stylesheet" href="lichtung.css"><link rel="stylesheet" href="fluss.css"><main><header><button id="homeLink"><span aria-hidden="true" class="home-icon">⌂</span> Lichtung</button></header>
+<section id="home"><h1>Emilias Dschungelcamp</h1><button id="dailyInvite" class="post-invite" hidden><span class="envelope" aria-hidden="true">✉</span><span><strong>Dschungelpost</strong><small id="dailyLabel"></small></span><span aria-hidden="true">›</span></button><button class="river-entry" id="riverLink"><span>Das Geheimnis am Fluss</span><strong>Zum Fluss ›</strong></button><div class="clearing"><aside role="img" aria-label="Emilia auf der Lichtung"></aside><button class="place tukan" id="missionLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#tukan"/></svg><span>TUKAN</span></button><button class="place frosch" id="frogLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#frosch"/></svg><span>FROSCH</span></button><button class="place affe" id="monkeyLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#affe"/></svg><span>AFFE</span></button><button class="place jaguar" id="catLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#jaguar"/></svg><span>JAGUAR</span></button><button class="place buch" id="bookLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#buch"/></svg><span>FORSCHERBUCH</span><small id="bookCount">0 / 4 TIERE</small></button></div><a class="parents" href="eltern.html">Elternbereich</a></section><section id="frog" hidden><aside aria-label="Emilia beim Frosch" role="img"></aside><small id="frogStep"></small><h1 id="frogTitle"></h1><p id="frogHint"></p><div id="frogTask"></div><div id="frogOptions"></div><button id="frogNext" disabled>Weiter</button></section><section id="book" hidden><aside role="img" aria-label="Emilia mit Forscherbuch" data-pose="book"></aside><div class="book-heading"><h1>Mein Forscherbuch</h1><p id="bookText"></p></div><h2>Meine Tierfreunde</h2><div id="finds"></div><button id="riverBook">Meine Flussfunde ›</button><h2>Meine Abzeichen</h2><div id="awards"></div><p id="bookGoal"></p><section class="post-album"><h2>Meine Dschungelpost</h2><p id="postTally"></p><div id="postStamps"></div></section></section>
 <div id="game" hidden><aside aria-hidden="true"></aside><small id="progress"></small><h1 id="heading"></h1><p id="hint"></p><div id="task"></div><div id="options"></div><div id="nav"></div></div>
-<section id="trail" hidden><div class="theatre"><aside role="img" aria-label="Emilia begleitet dich"></aside><div id="friend"></div></div><small id="trailStep"></small><h1 id="trailTitle"></h1><div id="model"></div><div id="trailChoices"></div><div id="trailTools"></div></section><section id="daily" hidden><div class="theatre"><aside aria-label="Emilia öffnet die Dschungelpost" role="img" data-pose="book"></aside><div id="postAnimal"></div></div><small>Dschungelpost</small><h1 id="postTitle"></h1><p id="postCue"></p><div id="postModel"></div><div id="postChoices"></div><div id="postActions"></div></section><output id="newAward" hidden aria-live="polite"></output><p role="status" id="feedback"></p></main>
+<section id="trail" hidden><div class="theatre"><aside role="img" aria-label="Emilia begleitet dich"></aside><div id="friend"></div></div><small id="trailStep"></small><h1 id="trailTitle"></h1><div id="model"></div><div id="trailChoices"></div><div id="trailTools"></div></section><section id="daily" hidden><div class="theatre"><aside aria-label="Emilia öffnet die Dschungelpost" role="img" data-pose="book"></aside><div id="postAnimal"></div></div><small>Dschungelpost</small><h1 id="postTitle"></h1><p id="postCue"></p><div id="postModel"></div><div id="postChoices"></div><div id="postActions"></div></section><section id="river" hidden><div id="riverScene"></div><h1 id="riverTitle"></h1><p id="riverHint"></p><div id="riverBoard"></div><div id="riverActions"></div></section><output id="newAward" hidden aria-live="polite"></output><p role="status" id="feedback"></p></main>
 <script>
 const $=id=>document.getElementById(id), intro='Horch mal, Emilia. Im Baum sitzt ein kleiner Tukan. Magst du mit ihm spielen?', ending='Da ist er ja! Jetzt gehört der kleine Tukan in dein Forscherbuch.';
 let data={clips:{},words:{ma:['Mama'],mi:['Mimi']},stickers:[]},db,stage=0,target='ma',round=0,built='',draft=null,rec=null,stream=null,player=null,token=0,busy=false;
@@ -24,7 +24,7 @@ async function save(next){if(!db)throw Error('Speichern ist hier nicht verfügba
 function protect(fn){return async()=>{if(busy)return;busy=true;try{await fn()}catch(e){msg(e.message)}finally{busy=false}}}
 function draw(){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 330 150');svg.setAttribute('aria-label','Spur ab dem grünen Punkt in Pfeilrichtung nachfahren');const paths={m:'M35 112 V40 L76 91 L117 40 V112',a:'M35 112 L76 40 L117 112 M51 84 H100',i:'M44 40 H88 M66 40 V112 M44 112 H88'};const letters=round%3===0?'m':round%3===1?target[1]:target;
 svg.innerHTML=[...letters].map((ch,i)=>{let dx=letters.length===1?85:32+i*115;let [x,y]=ch==='i'?[44,40]:[35,112];return '<g transform="translate('+dx+' 0)"><path d="'+paths[ch]+'" fill="none" stroke="#c7cbb6" stroke-width="12" stroke-linecap="round"/><circle cx="'+x+'" cy="'+y+'" r="6" fill="#19745b"/><text x="'+(x+9)+'" y="'+(y-7)+'" font-size="19">'+(ch==='a'?'↗':ch==='m'?'↑':'→')+'</text></g>'}).join('');
-let line=null;svg.onpointerdown=e=>{if(!e.isPrimary)return;svg.setPointerCapture(e.pointerId);line=document.createElementNS(svg.namespaceURI,'polyline');for(const [k,v] of Object.entries({fill:'none',stroke:'#276e56','stroke-width':5,'stroke-linecap':'round'}))line.setAttribute(k,v);svg.append(line);mark(e)};function mark(e){if(!line||!e.isPrimary)return;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());line.setAttribute('points',(line.getAttribute('points')||'')+' '+p.x+','+p.y)}svg.onpointermove=mark;svg.onpointerup=svg.onpointercancel=()=>line=null;$('task').append(svg)}
+let line=null;svg.onpointerdown=e=>{if(!e.isPrimary)return;svg.setPointerCapture(e.pointerId);line=document.createElementNS(svg.namespaceURI,'polyline');for(const [k,v] of Object.entries({fill:'none',stroke:'#276e56','stroke-width':5,'stroke-linecap':'round'}))line.setAttribute(k,v);svg.append(line);mark(e)};function mark(e){if(!line||!e.isPrimary)return;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());line.setAttribute('points',(line.getAttribute('points')||'')+' '+p.x+','+p.y)}svg.onpointermove=mark;watchTrace(svg,unlock);svg.onpointerup=svg.onpointercancel=()=>line=null;$('task').append(svg)}
 let solved=false;
 function huntCard(){
   const first=target==='ma'?['Mama','Maler','Magen']:['Mimi','Mira','Mikro'];
@@ -37,19 +37,19 @@ function cue(){const keys=['intro','listen','hunt','build','trace','read','end']
   play(keys[stage],null,()=>{if(stage===1||stage===3)play(target+'-slow');if(stage===2)play('wort-'+huntCard().word)});
 }
 const titles=['Der Tukan und das Echo','Ruf dem Tukan zurück','Was hörst du am Anfang?','Baue das Echo','Spuren im Sand','Lies dem Tukan vor','Dein Forscherbuch'];
-function render(){stop();msg();solved=false;for(const id of ['options','task','nav'])$(id).replaceChildren();built='';$('heading').textContent=titles[stage];$('progress').textContent=stage>0&&stage<6?'Station '+stage+' von 5':'';$('hint').textContent=[intro,'Hör hin. Dann bist du das Echo.','Hör das Wort. Tippe auf seinen Anfang.','Tippe die beiden Buchstaben der Reihe nach an.','Beginne beim grünen Punkt. Folge der Spur mit dem Finger.','Lies zuerst selbst. Danach kannst du vergleichen.',data.stickers.includes('Tukan')?'Dein Tukan ist eingeklebt.':'Du hast den Tukan entdeckt!'][stage];document.querySelector('#game aside').dataset.pose=stage===6?'book':stage===0||stage===2?'listen':'talk';
+function render(){resetAttempt();stop();msg();solved=false;for(const id of ['options','task','nav'])$(id).replaceChildren();built='';$('heading').textContent=titles[stage];$('progress').textContent=stage>0&&stage<6?'Station '+stage+' von 5':'';$('hint').textContent=[intro,'Hör hin. Dann bist du das Echo.','Hör das Wort. Tippe auf seinen Anfang.','Tippe die beiden Buchstaben der Reihe nach an.','Beginne beim grünen Punkt. Folge der Spur mit dem Finger.','Lies zuerst selbst. Danach kannst du vergleichen.',data.stickers.includes('Tukan')?'Dein Tukan ist eingeklebt.':'Du hast den Tukan entdeckt!'][stage];document.querySelector('#game aside').dataset.pose=stage===6?'book':stage===0||stage===2?'listen':'talk';
 const hear=(key,label='Anhören')=>{if(voice(key))btn('options','◖)) '+label,()=>play(key))};
 showCompanion('game','tukan',stage/6);
 if(stage===0){hear('intro','Geschichte hören');if(data.stickers.includes('Tukan'))btn('options','Forscherbuch öffnen',()=>navigate('book'))}
-if(stage===1){$('task').textContent=target;hear(target+'-slow','Langsam hören');hear(target,'Tukan hören')}
+if(stage===1){btn('options','Echo zurückgeben',()=>{showCompanion('game','tukan',0.3,true);$('task').textContent=target+' ✓';unlock()});$('task').textContent=target;hear(target+'-slow','Langsam hören');hear(target,'Tukan hören')}
 if(stage===2){
   const {word,answer}=huntCard();
   const listen=()=>play('wort-'+word);
   if(voice('wort-'+word))btn('options','◖)) Wort hören',listen);else {$('task').textContent=word;$('hint').textContent='Finde den gleichen Anfang.'}
-  const choices=round%3===0?['mi','ma']:['ma','mi'];
+  const choices=mixed(['mi','ma']);
   for(const value of choices)btn('options',value,()=>{
     if(solved)return;
-    if(value!==answer){msg('Schau: '+word.slice(0,2)+' … '+word.slice(2));play('retry',null,listen);return}
+    if(value!==answer){attempt.misses++;visualHint('options',answer,2);msg('Schau: '+word.slice(0,2)+' … '+word.slice(2));play('retry',null,listen);return}
     solved=true;showCompanion('game','tukan',stage/6,true);
     $('task').textContent=word;
     msg('Du hörst «'+answer+'» am Anfang von «'+word+'».');
@@ -57,10 +57,27 @@ if(stage===2){
     unlock();
   });
 }
-if(stage===3){hear(target);$('task').textContent='＿ ＿';for(const ch of (round%2?'ima':'aim'))btn('options',ch,()=>{if(built.length===2)return;if(ch===target[built.length]){built+=ch;$('task').textContent=built+(built.length===1?' ＿':'');msg(built===target?'Jetzt lies beides zusammen.':'');if(built===target){unlock();play(target)}}else msg('Hör nochmals hin.')})}
-if(stage>0&&stage<6)btn('options','? Hilfe',()=>{if(stage===4){msg('Starte am Punkt.');return}if(stage===3){msg('Erst M. Dann '+target[1]+'.');return}const example=stage===2?huntCard().word:target;$('task').textContent=example;msg(stage===3?'Erst M. Dann '+target[1]+'.':example);if(voice(target))play(target)});
-if(stage===4){draw();hear(target);btn('options','Spur löschen',render)}
-if(stage===5){let words=[...new Set([...data.words[target],target==='ma'?'Maler':'Mira',target])],w=words[round%words.length];$('task').textContent=w;btn('options','Lesehilfe',()=>{const first=document.createElement('strong');first.textContent=w.slice(0,2);$('task').replaceChildren(first,document.createTextNode(w.slice(2)));play(target+'-slow')});hear(w===target?target:'wort-'+w,'Wort anhören')}
+if(stage===3){hear(target);$('task').textContent='＿ ＿';for(const ch of mixed([... 'ima']))btn('options',ch,()=>{if(built.length===2)return;if(ch===target[built.length]){built+=ch;$('task').textContent=built+(built.length===1?' ＿':'');msg(built===target?'Jetzt lies beides zusammen.':'');if(built===target){unlock();play(target)}}else {visualHint('options',target[built.length],2);msg('Hör nochmals hin.')}})}
+if(stage>0&&stage<6)btn('options','? Hilfe',()=>{attempt.help=true;if(stage===4){$('task').classList.add('guide');msg('Starte am Punkt.');return}if(stage===5){const w=$('task').textContent;$('task').innerHTML='';const first=document.createElement('strong');first.textContent=w.slice(0,2);$('task').append(first,document.createTextNode(w.slice(2)));return}if(stage===3){msg('Erst M. Dann '+target[1]+'.');return}const example=stage===2?huntCard().word:target;$('task').textContent=example;msg(stage===3?'Erst M. Dann '+target[1]+'.':example);if(voice(target))play(target)});
+if(stage===4){draw();const glyph=round%3===0?'M':round%3===1?target[1].toUpperCase():target.toUpperCase();for(const value of mixed([glyph,glyph==='A'?'I':'A']))btn('options',value,()=>{if(value===glyph){unlock();msg('Spur gefunden.')}else visualHint('options',glyph,2)});hear(target);btn('options','Spur löschen',render)}
+if(stage===5){
+ const labels=['Frosch','Tukan','Affe','Jaguar'],word=labels[round%4];
+ $('task').textContent=word;
+ for(const label of mixed([word,labels[(round+1)%4]])){
+   const pick=document.createElement('button');pick.setAttribute('aria-label',label);pick.append(picture(animals[label]));
+   pick.onclick=()=>{if(label===word){unlock();showCompanion('game','tukan',1,true);msg('Gefunden!')}else{attempt.misses++;pick.classList.add('miss');msg('Versuche das andere Tier.')}};
+   $('options').append(pick);
+ }
+ hear('wort-'+word.toUpperCase(),'Wort anhören');
+ const custom=data.words[target]||[];
+ if(custom.length)btn('options','Meine Lesewörter',()=>{
+   const w=custom[round%custom.length];$('task').textContent=w;
+   $('options').replaceChildren();$('nav').lastElementChild.disabled=true;
+   for(const value of mixed(['ma','mi']))btn('options',value,()=>{if(value===w.slice(0,2).toLowerCase()){unlock();msg('Anfang gefunden.')}else visualHint('options',w.slice(0,2),2)});
+   if(!['ma','mi'].includes(w.slice(0,2).toLowerCase())){btn('options','Mitgelesen',unlock)}
+   hear('wort-'+w,'Wort anhören');
+ });
+}
 if(stage===6){btn('options','▤ Forscherbuch',()=>navigate('book'));hear('end','Geschichte hören');if(!data.stickers.includes('Tukan'))btn('options','Tukan einkleben',protect(async()=>{await recordStep('Tukan',5);navigate('book')}));for(const w of ['ma','mi'])btn('nav','Neue Runde mit '+w,()=>{stage=1;target=w;round=0;render();play(w+'-slow')});return}
 if(stage===4||stage===5)btn('options',stage===4?'Andere Spur':'Anderes Wort',()=>{round++;render()});
 if(stage>0)btn('nav','↻ Nochmals',()=>{
@@ -70,14 +87,14 @@ if(stage>0)btn('nav','↻ Nochmals',()=>{
 });
 if(stage===2)btn('options','Anderes Wort',()=>{round++;render();cue()});
 btn('nav',stage===0?'➜ Zum Tukan':'➜ Weiter',protect(async()=>{if(stage>0)await recordStep('Tukan',stage);stage++;round=0;render();cue()}));
-if(stage===2||stage===3)$('nav').lastElementChild.disabled=true;
+if(stage>0)$('nav').lastElementChild.disabled=true;
 }
 function navigate(page){
  if(rec)return;
- stop();msg();
+ stop();msg();stopFire();
  if(page!=='book')$('newAward').hidden=true;
  $('homeLink').parentElement.hidden=page==='home';
- for(const id of ['home','book','game','frog','trail','daily'])$(id).hidden=id!==page;
+ for(const id of ['home','book','game','frog','trail','daily','river'])$(id).hidden=id!==page;
  if(page==='game'){stage=0;round=0;target='ma';render()}
  if(page==='frog'){frogIndex=0;showFrog()}
  if(page==='book'){showFinds();showPostAlbum()}
@@ -96,7 +113,7 @@ const frogWords=[
  {word:'FROSCH',parts:['FROSCH'],other:'FISCH'}
 ];
 let frogIndex=0;
-function showFrog(){
+function showFrog(){resetAttempt();
  stop();msg();showCompanion('frog','frosch',frogIndex/5);const entry=frogWords[Math.floor(frogIndex/2)],building=frogIndex%2===1;
  $('frogStep').textContent='Teich '+(Math.floor(frogIndex/2)+1)+' von 3';
  $('frogTitle').textContent=building?'Baue das Wort':'Klatsche mit Emilia';
@@ -105,23 +122,23 @@ function showFrog(){
  $('frogNext').disabled=true;$('frogNext').textContent=frogIndex===5?'✓ Frosch einkleben':'➜ Weiter';
  const hear=()=>play('wort-'+entry.word);
  if(voice('wort-'+entry.word))btn('frogOptions','◖)) Anhören',hear);
- btn('frogOptions','? Hilfe',()=>{msg(entry.parts.join(' · '));$('frogTask').textContent=entry.parts.join(' · ')});btn('frogOptions','↻ Nochmals',showFrog);
- let placed=0;
+ btn('frogOptions','? Hilfe',()=>{attempt.help=true;msg(entry.parts.join(' · '));$('frogTask').textContent=entry.parts.join(' · ')});btn('frogOptions','↻ Nochmals',showFrog);
+ let placed=0,hops=0;
  function done(){showCompanion('frog','frosch',(frogIndex+1)/6,true);msg('Geschafft! '+entry.parts.join(' · '));$('frogNext').disabled=false}
  if(!building){
- let hops=0;
+
  btn('frogOptions','♩ Klatschen',()=>{
-   if(!$('frogNext').disabled)return;
+   if(!$('frogNext').disabled||hops>=entry.parts.length)return;
    hops++;$('frogTask').textContent=entry.parts.slice(0,hops).join(' · ')+(' ○'.repeat(entry.parts.length-hops));
    showCompanion('frog','frosch',(frogIndex+hops/entry.parts.length)/6,true);
-   if(hops===entry.parts.length)done();
+   if(hops===entry.parts.length)msg('Wie viele?');
  });
 }
 const choices=building?[entry.other,...entry.parts.slice().reverse()]:['1','2','3'];
- for(const choice of choices)btn('frogOptions',choice,()=>{
+ for(const choice of mixed(choices))btn('frogOptions',choice,()=>{
  if(!$('frogNext').disabled)return;
- if(!building){if(Number(choice)===entry.parts.length)done();else msg('Klatsche mit: '+entry.parts.join(' · '));return}
- if(choice!==entry.parts[placed]){msg('Schau auf den nächsten Teil von '+entry.word+'.');return}
+ if(!building){if(hops===entry.parts.length && Number(choice)===hops)done();else {visualHint('frogOptions',hops<entry.parts.length?'♩ Klatschen':String(hops),2);msg('Klatsche mit: '+entry.parts.join(' · '))}return}
+ if(choice!==entry.parts[placed]){visualHint('frogOptions',entry.parts[placed],2);msg('Schau auf den nächsten Teil von '+entry.word+'.');return}
  placed++;$('frogTask').textContent=entry.parts.slice(0,placed).join(' · ')+' '+entry.parts.slice(placed).map(()=> '＿').join(' ');
  if(placed===entry.parts.length)done();
  });
@@ -132,4 +149,4 @@ $('frogNext').onclick=protect(async()=>{
  navigate('book');
 });
 async function init(){try{db=await new Promise((ok,no)=>{const r=indexedDB.open('emilia-leserunde',1);r.onupgradeneeded=()=>r.result.createObjectStore('app');r.onsuccess=()=>ok(r.result);r.onerror=no});const saved=await new Promise((ok,no)=>{const r=db.transaction('app').objectStore('app').get('family');r.onsuccess=()=>ok(r.result);r.onerror=no});if(saved)data=saved;navigate('home')}catch{navigate('home');msg('Üben ist möglich. Der lokale Speicher ist hier gesperrt.')}}
-</script><script src="abenteuer.js"></script><script src="dschungelpost.js"></script></html>
+</script><script src="abenteuer.js"></script><script src="fluss.js"></script><script src="dschungelpost.js"></script></html>

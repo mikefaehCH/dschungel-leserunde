@@ -187,6 +187,7 @@ function openPost(post = postFor(postDay())) {
           msg();
           btn("postChoices", "▤ Forscherbuch", () => navigate("book"));
           btn("postChoices", "↻ Nochmals", () => openPost(post));
+          if(post.index%3===0)btn("postChoices","Brief vom Fluss",()=>openRiver());
         }
       } catch (e) {
         msg(e.message);

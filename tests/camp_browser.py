@@ -85,6 +85,10 @@ with sync_playwright() as p:
                 ["1"],
                 ["FROSCH"],
             ]:
+                if ans[0].isdigit():
+                    for _ in range(int(ans[0])):
+                        choice("frogOptions", "♩ Klatschen")
+                    assert page.locator("#frogNext").is_disabled()
                 for a in ans:
                     choice("frogOptions", a)
                 click("frogNext")
@@ -92,6 +96,11 @@ with sync_playwright() as p:
             click("homeLink")
             click("missionLink")
             for stage in range(6):
+                if stage in [1, 4, 5]:
+                    expect(page.locator("#nav button").last).to_be_disabled()
+                    choice(
+                        "options", {1: "Echo zurückgeben", 4: "M", 5: "Frosch"}[stage]
+                    )
                 if stage == 2:
                     choice("options", "mi")
                     choice("options", "ma")
@@ -205,6 +214,95 @@ with sync_playwright() as p:
         choice("trailTools", "◖)) Anhören")
         assert page.evaluate("player.src===data.clips.ma && !player.paused")
         playall()
+        # Storage regression: Teresa can record/export without changing Mike's MA.
+        original = page.evaluate("voice('ma')")
+        page.goto(url + "eltern.html")
+        page.fill("#user", "teresa")
+        page.fill("#pw", pw)
+        page.locator("form button").click()
+        expect(page.locator("#studio")).to_be_visible()
+        page.select_option("#clip", "ma")
+        expect(page.locator("#listen")).to_be_disabled()
+        page.locator("#file").set_input_files(
+            {"name": "dummy.wav", "mimeType": "audio/wav", "buffer": buf.getvalue()[:44] + bytes(16000)}
+        )
+        click("use")
+        expect(page.locator("#feedback")).to_contain_text("gespeichert")
+        page.goto(url)
+        click("monkeyLink")
+        assert original and page.evaluate("voice('ma')") == original
+        # A second round must resume the next step, with the previous badge intact.
+        choice("trailChoices", "MA")
+        nextt()
+        expect(page.locator("#trailStep")).to_contain_text("2 / 4")
+        page.reload()
+        click("bookLink")
+        page.locator("#finds button").filter(has_text="Affe").click()
+        expect(page.locator("#trailStep")).to_contain_text("2 / 4")
+        click("homeLink")
+        click("riverLink")
+
+        def riverbtn(name):
+            choice("riverActions", name)
+
+        riverbtn("Der erste Stein")
+        if width == 744:
+            m = page.locator("#riverBoard button").first.bounding_box()
+            a = page.locator("#riverBoard button").last.bounding_box()
+            page.mouse.move(m["x"] + m["width"] / 2, m["y"] + m["height"] / 2)
+            page.mouse.down()
+            page.mouse.move(a["x"] + a["width"] / 2, a["y"] + a["height"] / 2, steps=10)
+            page.mouse.up()
+        else:
+            choice("riverBoard", "M")
+            choice("riverBoard", "A")
+        riverbtn("Affe" if width == 744 else "Frosch")
+        expect(page.locator("#riverTitle")).to_have_text(
+            "Zwei Zehen" if width == 744 else "Zwei Ohren"
+        )
+        page.reload()
+        click("riverLink")
+        riverbtn("Der Zettel")
+        page.locator("#riverBoard button").click()
+        page.locator("#riverBoard button").click()
+        riverbtn("Lampe")
+        riverbtn("Hilfe")
+        riverbtn("Lama")
+        expect(page.locator("#riverTitle")).to_have_text("Ein langes Ohr!")
+        page.reload()
+        click("riverLink")
+        riverbtn("Das Glitzern")
+        riverbtn("Im Schilf")
+        expect(page.locator("#riverTitle")).to_have_text("Das Glöckchen!")
+        riverbtn("Meine Fundseite")
+        choice("riverBoard", "Glöckchen aufs Titelblatt")
+        expect(
+            page.get_by_role("button", name="Glöckchen aufs Titelblatt")
+        ).to_have_attribute("aria-pressed", "true")
+        riverbtn("Rätsel zeigen")
+        riverbtn("Zettel aufdecken")
+        expect(page.locator("#riverBoard")).to_have_text("LAMA")
+        riverbtn("Geheimnis zeigen")
+        riverbtn("Meine Fundseite")
+        riverbtn("Meine Schatzkarte")
+        for i in range(12):
+            page.locator("#riverBoard button").nth(i).click()
+            correct = page.evaluate("(i)=>fieldLetters[i][1]", i)
+            riverbtn(correct)
+            riverbtn("Zur Schatzkarte")
+        expect(page.locator("#riverBoard button").filter(has_text="✓")).to_have_count(
+            12
+        )
+        riverbtn("Zur Fundseite")
+        riverbtn("Lagerfeuer")
+        for i in range(4):
+            riverbtn("Nächstes Bild")
+        expect(page.locator("#riverHint")).to_contain_text("still")
+        riverbtn("Für heute fertig")
+        print(
+            "PASS: getrennte Aufnahmen, zweite Runde, Flussfall, zwölf Briefe, Kino",
+            flush=True,
+        )
         assert not errors, errors
         print(
             "PASS",

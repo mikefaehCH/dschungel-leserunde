@@ -4,6 +4,12 @@ Die Lichtung führt zum Tukan (Anfangssilben, Buchstaben und Lesewörter), zum F
 
 Im [Elternbereich](eltern.html) zeigt das Stimmenstudio die priorisierten Karten pro Abenteuer. Im Kinderbereich spielen Aufnahmen aus Mikes Zugang und von Mike bestätigte frühere Aufnahmen. Bereits gespeicherte Clips lassen sich probehören und bestätigen. Stimmenpakete der ersten Version bleiben importierbar. Aufnahmen und Fortschritt liegen im lokalen Browser.
 
+## Das Geheimnis am Fluss
+
+Das Flussbild auf der Lichtung öffnet drei kurze Besuche. Emilia verbindet M und A, wählt ihren Begleiter und folgt einem Wort bis zum Fundstück. Das Forscherbuch merkt sich den nächsten Besuch. Nach dem Abschluss kann sie ihr Titelbild wählen, jemandem das Rätsel stellen, zwölf weitere Forscherbriefe öffnen oder das Lagerfeuer-Kino anschauen. Fünf verschiedene Tagesmarken legen das Wasserfallbild frei.
+
+Die Flussexpedition ist auch vor der ersten Aufnahme spielbar. Zum Einstieg kann Mike im Studio zuerst MA als zusammenhängende Silbe aufnehmen. Die Familienprofile speichern ihre Aufnahmen getrennt. Für Tests erzeugte Töne bleiben im jeweiligen Testbrowser.
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.

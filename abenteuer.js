@@ -38,7 +38,7 @@ function progressFor(family, name) {
   const found = family.stickers.includes(name);
   const saved = family.expeditions?.[name];
   return {
-    steps: Math.max(found ? trailLengths[name] : 0, saved?.steps || 0),
+    steps: saved?.current ?? (found ? 0 : saved?.steps || 0),
     rounds: Math.max(found ? 1 : 0, saved?.rounds || 0),
   };
 }
@@ -64,10 +64,30 @@ async function recordStep(name, step) {
         expeditions: {
           ...latest.expeditions,
           [name]: {
-            steps: Math.max(previous.steps, step),
+            steps: Math.max(latest.expeditions?.[name]?.steps || 0, step),
+            current: finished ? 0 : step,
+            syllable: name === "Tukan" ? target : null,
             rounds: previous.rounds + Number(finished),
           },
         },
+      };
+      const kind =
+        name === "Tukan" && step === 1
+          ? "Teilnahme"
+          : name === "Tukan" && step === 4
+            ? "Spur"
+            : name === "Tukan" && step === 5
+              ? "Wortaufgabe"
+              : "Übung";
+      const mode = attempt.help
+        ? "mit Hilfe"
+        : attempt.misses
+          ? "nach einem weiteren Versuch"
+          : "im ersten Versuch";
+      const label = name + " · " + kind + " · " + mode;
+      updated.observations = {
+        ...latest.observations,
+        [label]: (latest.observations?.[label] || 0) + 1,
       };
       if (finished) {
         const before = badgesFor(latest);
@@ -142,21 +162,24 @@ function showFinds() {
     track.setAttribute("aria-hidden", "true");
     for (let i = 0; i < total; i++) {
       const leaf = document.createElement("i");
-      if (i < steps) leaf.className = "filled";
+      if (i < steps || (!steps && rounds)) leaf.className = "filled";
       track.append(leaf);
     }
     const status = document.createElement("small");
     status.textContent = rounds
-      ? rounds + (rounds === 1 ? " Runde" : " Runden")
+      ? rounds +
+        (rounds === 1 ? " Runde" : " Runden") +
+        (steps ? " · " + steps + " / " + total : "")
       : steps + " von " + total + " Schritten";
     stamp.append(picture(id), caption, track, status);
     stamp.onclick = () => {
-      if (!steps || rounds) {
+      if (!steps) {
         startAnimal(name);
         return;
       }
       if (name === "Tukan") {
         navigate("game");
+        target = data.expeditions?.Tukan?.syllable || "ma";
         stage = steps + 1;
         render();
         cue();
@@ -230,8 +253,14 @@ function startAnimal(name, firstStep = 0) {
   renderTrail();
 }
 function trailHelp() {
+  attempt.help = true;
   const a = adventures[animalName];
   $("model").textContent = a.syllable.toUpperCase();
+  visualHint(
+    "trailChoices",
+    step === 3 ? a.syllable[letters.length] : a.syllable,
+    2,
+  );
   msg(
     step === 3
       ? "Erst M. Dann " + a.syllable[1] + "."
@@ -277,6 +306,7 @@ function sandTrack() {
   return pad;
 }
 function renderTrail() {
+  resetAttempt();
   stop();
   msg();
   errors = 0;
@@ -311,6 +341,10 @@ function renderTrail() {
     btn("trailTools", "▤ Forscherbuch", () => navigate("book"));
     return;
   }
+  if (animalName === "Affe" && step < 3 && !voice(a.syllable)) {
+    $("model").replaceChildren(illustration("maler"));
+    $("trailTitle").textContent = "Wie beginnt Maler?";
+  }
   if (animalName === "Jaguar" && step < 3) {
     $("model").replaceChildren(sandTrack());
     $("trailTitle").textContent = "Folge der Spur";
@@ -321,16 +355,23 @@ function renderTrail() {
     : (step + repeatCount) % 2
       ? [a.syllable, a.other]
       : [a.other, a.syllable];
-  for (const choice of choices)
+  for (const choice of mixed(choices))
     btn("trailChoices", choice.toUpperCase(), () => {
       if (complete) return;
       const expected = assemble ? a.syllable[letters.length] : a.syllable;
       if (choice !== expected) {
         errors++;
+        visualHint("trailChoices", expected, errors);
         $("model").textContent = assemble
           ? (letters || "＿") + " · " + expected
           : a.syllable;
-        msg(errors > 1 ? "Tippe auf " + expected + "." : "Schau auf die Spur.");
+        msg(
+          errors > 1
+            ? "Tippe auf " + expected + "."
+            : animalName === "Affe"
+              ? "Schau auf den Stein."
+              : "Schau auf die Spur.",
+        );
         if (voice(a.syllable)) play(a.syllable);
         return;
       }
