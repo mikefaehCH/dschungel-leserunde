@@ -1,0 +1,11 @@
+{
+  "id": "./",
+  "name": "Emilias Dschungelcamp",
+  "short_name": "Dschungelcamp",
+  "lang": "de-CH",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e5ecdc",
+  "theme_color": "#e5ecdc"
+}

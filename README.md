@@ -22,6 +22,10 @@ Die 34 Clips aus Mikes freigegebenem Drive-Paket sind als verschlüsseltes Paket
 
 Fehlende Clips und die zugehörigen Originaldateien aus dem Drive-Paket werden durch die geprüfte Fassung ergänzt beziehungsweise ersetzt. Spätere eigene Aufnahmen und Fortschritte werden beim Zusammenführen berücksichtigt. Die Stimmen liegen danach lokal im selben Browser wie der Kinderbereich. Für ein weiteres Gerät ist einmal die Anmeldung als Mike nötig.
 
+## Start vom Home-Bildschirm
+
+Safari und die Home-Bildschirm-App können getrennte Speicher verwenden. Bei fehlenden Stimmen zeigt die Home-Bildschirm-App auf der Lichtung «Stimme einrichten». Diesen Link innerhalb der App öffnen und einmal als Mike anmelden. Der Rückweg ins Camp verwendet denselben App-Bereich. Die App verwendet für aufeinanderfolgende Clips dasselbe Audioelement. Falls die Wiedergabe blockiert wird, erscheint ein direkt antippbarer Abspielknopf.
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.
