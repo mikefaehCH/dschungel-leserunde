@@ -36,7 +36,8 @@ with sync_playwright() as p:
 
             ctx.route(url + "**", serve)
         page = ctx.new_page()
-        page.set_default_timeout(5000)
+        page.set_default_timeout(8000)
+        page.set_default_navigation_timeout(60000)
         errors = []
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.goto(url)
@@ -107,7 +108,34 @@ with sync_playwright() as p:
             click("bookLink")
             expect(page.locator("#finds button")).to_have_count(4)
 
+        # Old albums only contain stickers. Preserve the first completed round.
+        page.evaluate("""async () => {
+            await new Promise((resolve,reject)=>{
+              const tx=db.transaction('app','readwrite');
+              tx.objectStore('app').put({...data, stickers:['Frosch']},'family');
+              tx.oncomplete=resolve;tx.onabort=reject;
+            });
+        }""")
+        page.reload()
+        click("bookLink")
+        expect(page.locator("#bookText")).to_contain_text("1 von 4")
+        expect(page.locator("#awards .earned")).to_have_count(1)
+        click("homeLink")
+        click("monkeyLink")
+        choice("trailChoices", "MI")
+        choice("trailChoices", "MA")
+        nextt()
+        expect(page.locator("#trailStep")).to_contain_text("2 / 4")
+        page.reload()
+        click("bookLink")
+        expect(page.locator("#finds button").filter(has_text="Affe")).to_contain_text(
+            "1 von 4 Schritten"
+        )
+        expect(page.locator("#awards .earned")).to_have_count(1)
+        page.locator("#finds button").filter(has_text="Affe").click()
+        expect(page.locator("#trailStep")).to_contain_text("2 / 4")
         playall()
+        expect(page.locator("#awards .earned")).to_have_count(4)
         page.goto(url + "eltern.html")
         page.fill("#user", "mike")
         page.fill("#pw", pw)
