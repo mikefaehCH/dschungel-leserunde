@@ -1,0 +1,232 @@
+.river-entry {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 28px 18px 14px;
+  background: #386956 url(art/fluss.svg) center 55% / cover;
+  color: white;
+  border-radius: 18px;
+  text-align: left;
+}
+.river-entry span,
+.river-entry strong {
+  background: #214d40;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: clamp(13px, 2.6vw, 21px);
+}
+#river {
+  text-align: center;
+}
+#riverScene {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  height: clamp(170px, 33vh, 310px);
+  margin: 12px 0;
+  background: #adc495 url(art/fluss.svg) center/cover;
+}
+#riverScene aside {
+  position: absolute;
+  height: 83%;
+  width: 33%;
+  left: 5%;
+  bottom: 1%;
+  margin: 0;
+}
+#riverScene > .animal {
+  position: absolute;
+  width: 25%;
+  max-height: 72%;
+  left: 58%;
+  bottom: 8%;
+}
+#riverBoard {
+  font-size: clamp(36px, 8vw, 70px);
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+#riverBoard .animal,
+#riverActions .animal,
+#options button .animal {
+  width: 88px;
+  margin: auto;
+}
+#riverBoard .animal {
+  max-height: 96px;
+}
+.liane {
+  display: flex;
+  max-width: 440px;
+  margin: auto;
+  justify-content: space-between;
+  background: linear-gradient(
+    170deg,
+    transparent 48%,
+    #987c4c 49%,
+    #987c4c 51%,
+    transparent 52%
+  );
+}
+.liane button {
+  font-size: 48px;
+  touch-action: none;
+}
+#riverActions button {
+  vertical-align: middle;
+}
+button.guide,
+#riverBoard strong {
+  outline: 4px dashed #a56820;
+  outline-offset: 2px;
+}
+button.miss {
+  background: #c6d2ba !important;
+}
+#riverScene.reveal:after {
+  content: "✧";
+  position: absolute;
+  left: 64%;
+  bottom: 11%;
+  font-size: 48px;
+  color: #fff4ad;
+}
+#riverScene.fire-scene {
+  background-color: #394c58;
+  background-blend-mode: multiply;
+}
+@keyframes wiggle {
+  30% {
+    transform: rotate(-2deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+}
+.ripple,
+#riverScene.stone > .animal {
+  animation: wiggle 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ripple,
+  #riverScene.stone > .animal {
+    animation: none;
+  }
+}
+#model > .animal {
+  margin: auto;
+  max-width: 120px;
+}
+#riverScene .reflection {
+  transform: scaleY(-0.28);
+  transform-origin: center bottom;
+  opacity: 0.4;
+  filter: blur(1px);
+}
+#riverScene.reveal > .animal:not(.reflection) {
+  animation: bow 3s ease-in-out 1;
+}
+@keyframes bow {
+  50% {
+    transform: rotate(9deg) translateY(4px);
+  }
+}
+.board-path {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.board-path button {
+  font-size: 13px;
+  margin: 0;
+  padding: 8px;
+}
+.treasure {
+  display: flex;
+  max-width: 520px;
+  margin: 12px auto 0;
+  border: 2px solid #a08653;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.treasure span {
+  width: 20%;
+  aspect-ratio: 0.8;
+  background-size: 500% 100%;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  color: #765d38;
+  border-right: 1px dashed #a08653;
+}
+.charted {
+  background-image: url(art/wasserfall.svg);
+}
+.fog {
+  background: #e9dec2;
+}
+.map-note {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+#riverScene > .neck-bell {
+  width: 5%;
+  left: 72.5%;
+  bottom: 21%;
+  z-index: 2;
+}
+.stepping-stone {
+  position: absolute;
+  bottom: 16%;
+  left: 46%;
+  padding: 3px 12px;
+  border-radius: 60%;
+  background: #d9d1a9;
+  color: #344c42;
+  font-weight: bold;
+  animation: land 0.45s ease-out;
+}
+.telescope {
+  position: absolute;
+  bottom: 32%;
+  left: 70%;
+  width: 12%;
+  height: 9px;
+  background: linear-gradient(
+    90deg,
+    #bf8c45 25%,
+    #455954 25%,
+    #526560 74%,
+    #c59a5f 74%
+  );
+  transform: rotate(-12deg);
+  border-radius: 3px;
+}
+@keyframes land {
+  from {
+    transform: translateY(-65px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stepping-stone {
+    animation: none;
+  }
+}
+
+.river-memories {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.river-memories .animal {
+  width: 3.5rem;
+  height: 3rem;
+}
