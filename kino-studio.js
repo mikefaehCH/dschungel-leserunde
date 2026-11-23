@@ -44,7 +44,10 @@
       tx.onabort = () => no(Error("Speichern fehlgeschlagen. Prüfe den freien Speicher."));
     });
   }
-  const say = (text) => (document.getElementById("kinoFeedback").textContent = text);
+  const say = (text) => {
+    const line = document.getElementById("kinoFeedback");
+    if (line) line.textContent = text;
+  };
 
   async function readiness() {
     const family = (await read("family")) || {};
@@ -69,19 +72,70 @@
     document.getElementById("kinoUse").disabled = true;
     document.getElementById("kinoFile").value = "";
   }
-  function takeFile(file) {
+  const dataUrl = (blob) =>
+    new Promise((ok, no) => {
+      const reader = new FileReader();
+      reader.onload = () => ok(reader.result);
+      reader.onerror = no;
+      reader.readAsDataURL(blob);
+    });
+  // Same format as the studio: mono 24 kHz WAV with a gently adjusted level.
+  async function toWav(blob) {
+    if (blob.size > 15e6) throw Error("Bitte eine kurze Aufnahme wählen.");
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    try {
+      const audio = await ctx.decodeAudioData(await blob.arrayBuffer());
+      if (audio.duration > 45) throw Error("Bitte höchstens 45 Sekunden aufnehmen.");
+      const offline = new OfflineAudioContext(1, Math.ceil(audio.duration * 24000), 24000);
+      const src = offline.createBufferSource();
+      src.buffer = audio;
+      src.connect(offline.destination);
+      src.start();
+      const samples = (await offline.startRendering()).getChannelData(0);
+      let peak = 0,
+        sum = 0;
+      for (const v of samples) {
+        peak = Math.max(peak, Math.abs(v));
+        sum += v * v;
+      }
+      if (peak < 0.005) throw Error("Kaum hörbar. Bitte näher am Mikrofon erneut aufnehmen.");
+      const gain = Math.min(5, 0.92 / peak, 0.13 / Math.sqrt(sum / samples.length));
+      const bytes = new ArrayBuffer(44 + samples.length * 2),
+        view = new DataView(bytes),
+        tag = (at, text) => [...text].forEach((c, i) => view.setUint8(at + i, c.charCodeAt(0)));
+      tag(0, "RIFF");
+      view.setUint32(4, bytes.byteLength - 8, true);
+      tag(8, "WAVE");
+      tag(12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, 24000, true);
+      view.setUint32(28, 48000, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      tag(36, "data");
+      view.setUint32(40, samples.length * 2, true);
+      samples.forEach((x, i) => view.setInt16(44 + i * 2, kinoClamp(x * gain, -1, 1) * 32767, true));
+      return dataUrl(new Blob([bytes], { type: "audio/wav" }));
+    } finally {
+      ctx.close?.();
+    }
+  }
+  async function takeFile(file) {
     if (!file) return;
-    if (!/^audio\//.test(file.type) || file.size > 4e6) {
-      say("Bitte eine Audiodatei unter 4 MB wählen.");
+    if (!/^audio\//.test(file.type)) {
+      say("Bitte eine Audiodatei wählen.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      draft = reader.result;
+    try {
+      draft = await toWav(file);
       document.getElementById("kinoUse").disabled = false;
-      say("Aufnahme bereit. Probehören oder speichern.");
-    };
-    reader.readAsDataURL(file);
+      say("Lautstärke angepasst. Probehören oder speichern.");
+    } catch (e) {
+      draft = null;
+      say(e.message || "Diese Aufnahme kann nicht gelesen werden.");
+    }
   }
   async function toggleRecording(button) {
     if (recorder) {
@@ -230,6 +284,64 @@
     if (mike) showCard();
     await readiness();
   }
+  // The studio import accepts only its own cards. Kino clips in a voice package are
+  // taken over here first; the rest of the package goes to the studio unchanged.
+  const wav = /^data:audio\/wav;base64,UklGR[A-Za-z0-9+/=]+$/;
+  document.addEventListener(
+    "change",
+    async (event) => {
+      const input = event.target;
+      if (input.id !== "import" || input.dataset.kinoChecked) return;
+      const file = input.files?.[0];
+      if (!file || file.size > 80e6) return;
+      event.stopImmediatePropagation();
+      let forward = file,
+        note = "";
+      try {
+        const pack = JSON.parse(await file.text());
+        const ids = new Set(kinoClips.map(([key]) => key));
+        const found = Object.entries(pack?.clips || {}).filter(([key]) => ids.has(key));
+        if (found.length) {
+          if (found.some(([, v]) => typeof v !== "string" || !wav.test(v) || v.length > 3e6))
+            throw Error("Ungültige Kino-Aufnahme im Paket.");
+          const confirmed = found.filter(([key]) => Array.isArray(pack.mikeKeys) && pack.mikeKeys.includes(key));
+          if (mike && confirmed.length) {
+            store ||= await openStore();
+            const merged = await change("family", (latest) => {
+              const fresh = { stickers: [], words: {}, ...(latest || {}) };
+              fresh.clips = { ...fresh.clips, ...Object.fromEntries(confirmed) };
+              fresh.mikeKeys = [...new Set([...(fresh.mikeKeys || []), ...confirmed.map(([key]) => key)])];
+              return fresh;
+            });
+            try {
+              if (typeof data === "object" && data) data = merged;
+            } catch {}
+            note = confirmed.length + " Kino-Aufnahmen übernommen.";
+          }
+          for (const [key] of found) delete pack.clips[key];
+          forward = new File([JSON.stringify(pack)], file.name, { type: "application/json" });
+        }
+      } catch (e) {
+        if (e instanceof SyntaxError) forward = file;
+        else {
+          input.value = "";
+          say(e.message);
+          return;
+        }
+      }
+      const transfer = new DataTransfer();
+      transfer.items.add(forward);
+      input.files = transfer.files;
+      input.dataset.kinoChecked = "1";
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      delete input.dataset.kinoChecked;
+      if (note) {
+        await readiness().catch(() => {});
+        say(note);
+      }
+    },
+    true,
+  );
   let tries = 0;
   (function wait() {
     if (document.getElementById("studio")) mount().catch(() => {});

@@ -1,5 +1,6 @@
 """Check the campfire cinema: scenes, cues, held recordings, sounds, entry points and the parents' panel."""
 import base64
+import json
 import io
 import math
 import mimetypes
@@ -216,5 +217,48 @@ with sync_playwright() as p:
         page.wait_for_function("!kinoSfx.isEnabled()")
         assert not errors, errors
         print("PASS Elternbereich: Kino-Karten; Speichern; Vorschau; Geräusch-Schalter; Teresa", flush=True)
+        ctx.close()
+    if os.getenv("CAMP_TEST_PASSWORD"):
+        # The real encrypted studio: both areas side by side, studio saves keep kino clips, package import.
+        studio_bin = (root / "studio.bin").read_bytes()
+        ctx, page, errors = context(viewport={"width": 744, "height": 1133})
+        put_family(page, {"clips": {}, "mikeKeys": [], "stickers": ["Affe"], "words": {"ma": ["Mama"], "mi": ["Mimi"]}, "testMarker": "keep"})
+
+        def real_login(user):
+            page.goto(url + "eltern.html")
+            page.fill("#user", user)
+            page.fill("#pw", os.environ["CAMP_TEST_PASSWORD"])
+            page.locator("form button").click()
+            expect(page.locator("#studio")).to_be_visible(timeout=60000)
+            expect(page.locator("#kinoStudio")).to_be_visible()
+
+        real_login("mike")
+        page.select_option("#kinoClip", "kino.mama.1")
+        page.locator("#kinoFile").set_input_files({"name": "tukan.wav", "mimeType": "audio/wav", "buffer": tone(0.8)})
+        expect(page.locator("#kinoUse")).to_be_enabled()
+        page.locator("#kinoUse").click()
+        expect(page.locator("#kinoFeedback")).to_contain_text("gespeichert")
+        assert page.evaluate("data.clips['kino.mama.1'].startsWith('data:audio/wav;base64,UklGR')")
+        page.select_option("#clip", "mi")
+        page.locator("#file").set_input_files({"name": "mi.wav", "mimeType": "audio/wav", "buffer": tone(0.6)})
+        page.locator("#use").click()
+        expect(page.locator("#feedback")).to_contain_text("gespeichert")
+        family = page.evaluate("readFamily=()=>new Promise(r=>{const q=indexedDB.open('emilia-leserunde',1);q.onsuccess=()=>{const g=q.result.transaction('app').objectStore('app').get('family');g.onsuccess=()=>r(g.result)}});readFamily()")
+        assert "kino.mama.1" in family["clips"] and "mi" in family["clips"], list(family["clips"])
+        assert {"kino.mama.1", "mi"} <= set(family["mikeKeys"])
+        pack = {"version": 1, "words": {"ma": ["Mama"], "mi": ["Mimi"]}, "clips": {"kino.mama.2": as_url(tone(0.5)), "ma": as_url(tone(0.7))}, "mikeKeys": ["kino.mama.2", "ma"]}
+        page.locator("#import").set_input_files({"name": "paket.json", "mimeType": "application/json", "buffer": json.dumps(pack).encode()})
+        expect(page.locator("#feedback")).to_contain_text("übernommen")
+        expect(page.locator("#kinoFeedback")).to_contain_text("1 Kino-Aufnahmen übernommen")
+        family = page.evaluate("readFamily()")
+        assert {"kino.mama.1", "kino.mama.2", "ma", "mi"} <= set(family["mikeKeys"]), family["mikeKeys"]
+        assert family["testMarker"] == "keep"
+        real_login("teresa")
+        expect(page.locator("#kinoStudio")).to_contain_text("nimmt Mike auf")
+        page.goto(url)
+        page.wait_for_function('typeof db!=="undefined" && !!db')
+        assert page.evaluate("!!voice('kino.mama.1') && !!voice('kino.mama.2') && !!voice('mi')")
+        assert not errors, errors
+        print("PASS echtes Studio: Kino-Bereich; Studio-Aufnahme behält Kino-Clips; Paketimport; Teresa", flush=True)
         ctx.close()
     browser.close()
