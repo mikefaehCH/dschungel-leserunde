@@ -444,6 +444,7 @@ function fire(frame) {
     riverButton("Nächstes Bild", () => fire(frame + 1));
     fireTimer = setInterval(() => fire(frame + 1), 15000);
   }
+  riverButton("Lagerfeuer-Kino", () => openKino(), "feuer");
   riverButton("Für heute fertig", () => navigate("home"));
 }
 $("riverLink").onclick = () => openRiver();

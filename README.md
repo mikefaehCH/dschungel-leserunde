@@ -34,6 +34,18 @@ Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilb
 
 Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
 
+## Lagerfeuer-Kino
+
+Drei kurze Trickfilme zeigen, wie aus Buchstaben Silben und Wörter werden: MAMA (Tukan, Affe, Frosch), MIMI (Jaguar, Tukan) und LAMA (Frosch, Affe, Lama). Sie öffnen sich im Forscherbuch unter «Meine Filme», am Lagerfeuer und freiwillig nach einem abgeschlossenen Silbenpfad. Angeschaute Filme erhalten einen Vermerk unter dem eigenen Speicherschlüssel kino:v1.
+
+Die Filme bestehen aus SVG und JavaScript (kino.js) und verwenden die Tiere aus art/animals.svg und art/fund.svg. Jede Szene ist ein Datenobjekt mit Akteuren, Keyframes, Untertiteln, Sprech-Cues und Geräuschen. Die Geräusche entstehen im Browser (kino-sfx.js), ohne Audiodateien. Während Mikes Stimme spricht, werden sie leiser. Bei reduzierter Bewegung blenden die Tiere über, Konfetti und Glühen entfallen.
+
+Im Elternbereich erscheint unter dem Stimmenstudio der Bereich «Lagerfeuer-Kino» (kino-studio.js). Dort nimmt Mike die 15 Kino-Sprechtexte auf, schaltet die Geräusche ein oder aus und sieht jede Szene mit seinen Aufnahmen und einem Zeitschieber in der Vorschau. Ohne Aufnahme laufen die Filme mit Untertiteln und Geräuschen. Ist eine Aufnahme länger als ihr Platz im Film, wartet der Film, bis sie fertig ist. Im Kinderbereich spielen nur Mikes bestätigte Aufnahmen.
+
+```sh
+python tests/kino.py
+```
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.

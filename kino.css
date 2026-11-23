@@ -1,0 +1,103 @@
+#kino {
+  text-align: center;
+}
+#kino h1 {
+  margin: 4px 0;
+}
+#kinoStage .kino-stage {
+  display: block;
+  width: min(100%, 960px, calc((100vh - 240px) * 1.615));
+  width: min(100%, 960px, calc((100dvh - 240px) * 1.615));
+  min-width: min(100%, 320px);
+  margin: 8px auto;
+  border-radius: 22px;
+  background: #b1d9c4;
+}
+#kinoStage.ended .k-card {
+  cursor: pointer;
+}
+#kinoControls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#kinoControls button {
+  min-width: 72px;
+  min-height: 64px;
+  font-size: 24px;
+}
+#kinoPicker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+#kinoPicker .kino-film {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(30%, 210px);
+  min-width: 150px;
+  padding: 14px;
+  font-size: 28px;
+  letter-spacing: 0.08em;
+}
+#kinoPicker .kino-film .animal {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+}
+#kinoPicker .kino-film small {
+  font-size: 15px;
+  letter-spacing: 0;
+}
+#kinoPicker .kino-film.seen small {
+  color: #19745b;
+  font-weight: bold;
+}
+#kinoPicker > button:last-child {
+  flex-basis: 100%;
+  max-width: 280px;
+}
+.kino-reward {
+  font-size: 22px;
+}
+@media (max-width: 480px) {
+  #kinoPicker .kino-film {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  #kinoPicker .kino-film .animal {
+    width: 90px;
+  }
+}
+#kinoStudio {
+  margin: 28px 0;
+  padding: 18px;
+  border: 2px solid #96ab8a;
+  border-radius: 18px;
+  background: #fffaf0;
+}
+#kinoStudio label {
+  display: block;
+  margin: 8px 0;
+}
+#kinoStudio select {
+  max-width: 100%;
+  font-size: 16px;
+}
+#kinoText {
+  font-size: 22px;
+  font-weight: bold;
+}
+#kinoPreview .kino-stage {
+  display: block;
+  width: 100%;
+  border-radius: 16px;
+}
+#kinoScrub {
+  width: 100%;
+}

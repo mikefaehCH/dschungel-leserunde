@@ -22,7 +22,8 @@ document.querySelector('form').onsubmit=async e=>{
  const payload=JSON.stringify(bundled).replace(/</g,'\\u003c');
  const tag='<script type="application/json" id="bundledVoiceData">'+payload+'<\/script>';
  const page=new TextDecoder().decode(html).replace('<html lang="de-CH"','<html lang="de-CH" data-parent="'+username+'"').replace('<script>',tag+'<script>');
- document.open();document.write(page);document.close();
+ const kino='<link rel="stylesheet" href="kino.css?v=1"><script src="kino-sfx.js?v=1"><\/script><script src="kino.js?v=1"><\/script><script src="kino-studio.js?v=1"><\/script>';
+ document.open();const end=page.lastIndexOf('</html>');document.write(end<0?page+kino:page.slice(0,end)+kino+page.slice(end));document.close();
  }catch(err){status.textContent=err.name==='OperationError'?'Benutzername oder Passwort stimmt nicht.':'Studio konnte nicht geöffnet werden. Lade die Seite erneut.';button.disabled=false}
 };
 </script></html>
