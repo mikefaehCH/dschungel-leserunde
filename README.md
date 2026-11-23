@@ -26,6 +26,14 @@ Fehlende Clips und die zugehörigen Originaldateien aus dem Drive-Paket werden d
 
 Safari und die Home-Bildschirm-App können getrennte Speicher verwenden. Bei fehlenden Stimmen zeigt die Home-Bildschirm-App auf der Lichtung «Stimme einrichten». Diesen Link innerhalb der App öffnen und einmal als Mike anmelden. Der Rückweg ins Camp verwendet denselben App-Bereich. Die App verwendet für aufeinanderfolgende Clips dasselbe Audioelement. Falls die Wiedergabe blockiert wird, erscheint ein direkt antippbarer Abspielknopf.
 
+## Dschungelpfad
+
+Unter der Lichtung führt ein scrollbarer Pfad zu sechs weiteren Tieren. Elefant und Schmetterling üben LA, Schildkröte und Faultier MA, Schlange und Krokodil MI. Jede Geschichte enthält drei Zuordnungen derselben Silbe, eine Buchstabenfolge und eine Wortaufgabe. Blumen, Brückenbretter, Spuren, Knoten oder Schilfnoten reagieren auf die Lösung.
+
+Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilbe als Mikes Stimme vorliegen. Im Stimmenstudio sind die Texte nach Tier geordnet. Nach dem Speichern folgt die nächste fehlende Szene desselben Tiers. MA, MI und LA werden aus dem bestehenden Paket wiederverwendet. Für alle sechs Geschichten sind 36 zusätzliche Szenenaufnahmen nötig.
+
+Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.
@@ -84,4 +92,8 @@ python tests/silbenpfad.py
 
 ```sh
 python tests/voice_bundle.py
+```
+
+```sh
+python tests/dschungelpfad.py
 ```

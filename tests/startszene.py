@@ -62,7 +62,7 @@ with sync_playwright() as p:
                 assert overlap_x <= 1 or overlap_y <= 1, (name, other)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         if width >= 600:
-            assert page.evaluate("document.documentElement.scrollHeight <= innerHeight")
+            assert scene["y"] + scene["height"] <= height
         for entry, destination in entries.items():
             page.locator("#" + entry).click()
             expect(page.locator("#" + destination)).to_be_visible()
