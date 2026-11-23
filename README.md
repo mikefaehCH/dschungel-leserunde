@@ -16,6 +16,12 @@ Auf der Lichtung öffnet die Blattmarke MA, MI und LA. Jeder Weg enthält drei Z
 
 Für den Hörmodus reichen die drei zusammenhängend gesprochenen Silben MA, MI und LA. Im Elternbereich gibt es dafür eine eigene Kartengruppe. Ohne Aufnahme zeigt die Zuordnungsaufgabe die Zielsilbe. Die gespeicherten Beobachtungen unterscheiden den ersten Versuch, weitere Versuche und Hilfe.
 
+## Geprüftes Sprachpaket
+
+Die 34 Clips aus Mikes freigegebenem Drive-Paket sind als verschlüsseltes Paket eingebunden. Beim Anmelden als Mike im Elternbereich werden sie auf diesem Gerät aktiviert. Lange äussere Pausen wurden gekürzt und die Pegel mit begrenzter Verstärkung angepasst. Die Lautanfänge haben einen Sicherheitsabstand. Die Sprechgeschwindigkeit bleibt erhalten.
+
+Fehlende Clips und die zugehörigen Originaldateien aus dem Drive-Paket werden durch die geprüfte Fassung ergänzt beziehungsweise ersetzt. Spätere eigene Aufnahmen und Fortschritte werden beim Zusammenführen berücksichtigt. Die Stimmen liegen danach lokal im selben Browser wie der Kinderbereich. Für ein weiteres Gerät ist einmal die Anmeldung als Mike nötig.
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.
@@ -70,4 +76,8 @@ Der Silbenpfad hat eine eigene Browserprüfung. Mit CAMP_TEST_PASSWORD prüft si
 
 ```sh
 python tests/silbenpfad.py
+```
+
+```sh
+python tests/voice_bundle.py
 ```
