@@ -1,8 +1,7 @@
-<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EMILIAS DSCHUNGELCAMP</title><link rel="stylesheet" href="camp.css"><main><header><button id="homeLink">Dschungelcamp</button></header>
-<section id="home"><div class="hero"><aside role="img" aria-label="Emilia hockt als Dschungelforscherin neben einem Frosch"></aside><div><h1>Emilias <span>Dschungelcamp</span></h1><p>Wohin möchtest du?</p></div></div><div class="routes"><button id="missionLink">Zum Tukan<small>Silben hören, legen und lesen</small></button><button id="frogLink">Zum Frosch<small>Silben klatschen und Wörter bauen</small></button><button id="bookLink">Forscherbuch<small>Meine Entdeckungen</small></button></div></section>
-<section id="frog" hidden><aside aria-label="Emilia beim Frosch" role="img"></aside><small id="frogStep"></small><h1 id="frogTitle"></h1><p id="frogHint"></p><div id="frogTask"></div><div id="frogOptions"></div><button id="frogNext" disabled>Weiter</button></section><section id="book" hidden><aside role="img" aria-label="Emilia mit Forscherbuch" data-pose="book"></aside><h1>Mein Forscherbuch</h1><p id="bookText"></p><button id="bookMission">Zum Tukan</button></section>
+<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EMILIAS DSCHUNGELCAMP</title><link rel="stylesheet" href="camp.css"><link rel="stylesheet" href="lichtung.css"><main><header><button id="homeLink"><span aria-hidden="true" class="home-icon">⌂</span> Lichtung</button></header>
+<section id="home"><h1>Emilias Dschungelcamp</h1><div class="clearing"><aside role="img" aria-label="Emilia auf der Lichtung"></aside><button class="place tukan" id="missionLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#tukan"/></svg><span>TUKAN</span></button><button class="place frosch" id="frogLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#frosch"/></svg><span>FROSCH</span></button><button class="place affe" id="monkeyLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#affe"/></svg><span>AFFE</span></button><button class="place jaguar" id="catLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#jaguar"/></svg><span>JAGUAR</span></button><button class="place buch" id="bookLink"><svg class="animal" aria-hidden="true" viewBox="0 0 120 100"><use href="art/animals.svg#buch"/></svg><span>FORSCHERBUCH</span></button></div><a class="parents" href="eltern.html">Elternbereich</a></section><section id="frog" hidden><aside aria-label="Emilia beim Frosch" role="img"></aside><small id="frogStep"></small><h1 id="frogTitle"></h1><p id="frogHint"></p><div id="frogTask"></div><div id="frogOptions"></div><button id="frogNext" disabled>Weiter</button></section><section id="book" hidden><aside role="img" aria-label="Emilia mit Forscherbuch" data-pose="book"></aside><h1>Mein Forscherbuch</h1><p id="bookText"></p><div id="finds"></div><button id="bookMission">Zum Tukan</button></section>
 <div id="game" hidden><aside aria-hidden="true"></aside><small id="progress"></small><h1 id="heading"></h1><p id="hint"></p><div id="task"></div><div id="options"></div><div id="nav"></div></div>
-<p role="status" id="feedback"></p></main>
+<section id="trail" hidden><div class="theatre"><aside role="img" aria-label="Emilia begleitet dich"></aside><div id="friend"></div></div><small id="trailStep"></small><h1 id="trailTitle"></h1><div id="model"></div><div id="trailChoices"></div><div id="trailTools"></div></section><p role="status" id="feedback"></p></main>
 <script>
 const $=id=>document.getElementById(id), intro='Horch mal, Emilia. Im Baum sitzt ein kleiner Tukan. Magst du mit ihm spielen?', ending='Da ist er ja! Jetzt gehört der kleine Tukan in dein Forscherbuch.';
 let data={clips:{},words:{ma:['Mama'],mi:['Mimi']},stickers:[]},db,stage=0,target='ma',round=0,built='',draft=null,rec=null,stream=null,player=null,token=0,busy=false;
@@ -15,8 +14,8 @@ const extraWords=['REGEN','BANANE','FROSCH','Maler','Magen','Mira','Mikro'];
 function play(key,source,after){
   stop();
   const active=token;
-  const url=source || data.clips[key];
-  if(!url){if(after){after();return}msg('Papa liest vor: '+(cards()[key]||key));return}
+  const url=source || voice(key);
+  if(!url){if(after){after();return}return}
   player=new Audio(url);
   player.onended=()=>{if(active===token && after)after()};
   player.play().catch(()=>{if(active===token)msg('Tippe nochmals auf Anhören.')});
@@ -39,18 +38,19 @@ function cue(){const keys=['intro','listen','hunt','build','trace','read','end']
 }
 const titles=['Der Tukan und das Echo','Ruf dem Tukan zurück','Was hörst du am Anfang?','Baue das Echo','Spuren im Sand','Lies dem Tukan vor','Dein Forscherbuch'];
 function render(){stop();msg();solved=false;for(const id of ['options','task','nav'])$(id).replaceChildren();built='';$('heading').textContent=titles[stage];$('progress').textContent=stage>0&&stage<6?'Station '+stage+' von 5':'';$('hint').textContent=[intro,'Hör hin. Dann bist du das Echo.','Hör das Wort. Tippe auf seinen Anfang.','Tippe die beiden Buchstaben der Reihe nach an.','Beginne beim grünen Punkt. Folge der Spur mit dem Finger.','Lies zuerst selbst. Danach kannst du vergleichen.',data.stickers.includes('Tukan')?'Dein Tukan ist eingeklebt.':'Du hast den Tukan entdeckt!'][stage];document.querySelector('#game aside').dataset.pose=stage===6?'book':stage===0||stage===2?'listen':'talk';
-const hear=(key,label='Anhören')=>btn('options',label,()=>play(key));
-if(stage===0){hear('intro','Geschichte hören');if(data.stickers.length)btn('options','Forscherbuch öffnen',()=>{stage=6;render()})}
+const hear=(key,label='Anhören')=>{if(voice(key))btn('options','◖)) '+label,()=>play(key))};
+showCompanion('game','tukan',stage/6);
+if(stage===0){hear('intro','Geschichte hören');if(data.stickers.includes('Tukan'))btn('options','Forscherbuch öffnen',()=>navigate('book'))}
 if(stage===1){$('task').textContent=target;hear(target+'-slow','Langsam hören');hear(target,'Tukan hören')}
 if(stage===2){
   const {word,answer}=huntCard();
   const listen=()=>play('wort-'+word);
-  btn('options','Wort hören',listen);
+  if(voice('wort-'+word))btn('options','◖)) Wort hören',listen);else {$('task').textContent=word;$('hint').textContent='Finde den gleichen Anfang.'}
   const choices=round%3===0?['mi','ma']:['ma','mi'];
   for(const value of choices)btn('options',value,()=>{
     if(solved)return;
-    if(value!==answer){msg('Lausche auf die erste Silbe.');play('retry',null,listen);return}
-    solved=true;
+    if(value!==answer){msg('Schau: '+word.slice(0,2)+' … '+word.slice(2));play('retry',null,listen);return}
+    solved=true;showCompanion('game','tukan',stage/6,true);
     $('task').textContent=word;
     msg('Du hörst «'+answer+'» am Anfang von «'+word+'».');
     play('yes');
@@ -58,23 +58,28 @@ if(stage===2){
   });
 }
 if(stage===3){hear(target);$('task').textContent='＿ ＿';for(const ch of (round%2?'ima':'aim'))btn('options',ch,()=>{if(built.length===2)return;if(ch===target[built.length]){built+=ch;$('task').textContent=built+(built.length===1?' ＿':'');msg(built===target?'Jetzt lies beides zusammen.':'');if(built===target){unlock();play(target)}}else msg('Hör nochmals hin.')})}
+if(stage>0&&stage<6)btn('options','? Hilfe',()=>{if(stage===4){msg('Starte am Punkt.');return}if(stage===3){msg('Erst M. Dann '+target[1]+'.');return}const example=stage===2?huntCard().word:target;$('task').textContent=example;msg(stage===3?'Erst M. Dann '+target[1]+'.':example);if(voice(target))play(target)});
 if(stage===4){draw();hear(target);btn('options','Spur löschen',render)}
 if(stage===5){let words=[...new Set([...data.words[target],target==='ma'?'Maler':'Mira',target])],w=words[round%words.length];$('task').textContent=w;btn('options','Lesehilfe',()=>{const first=document.createElement('strong');first.textContent=w.slice(0,2);$('task').replaceChildren(first,document.createTextNode(w.slice(2)));play(target+'-slow')});hear(w===target?target:'wort-'+w,'Wort anhören')}
-if(stage===6){hear('end','Geschichte hören');if(!data.stickers.includes('Tukan'))btn('options','Tukan einkleben',protect(async()=>{await save({...data,stickers:[...data.stickers,'Tukan']});render()}));for(const w of ['ma','mi'])btn('nav','Neue Runde mit '+w,()=>{stage=1;target=w;round=0;render();play(w+'-slow')});return}
-if(stage>0)btn('nav',stage===4?'Nächste Spur':stage===2?'Nächstes Hörwort':stage===5?'Nächstes Lesewort':'Noch einmal',()=>{
-  round++;render();
+if(stage===6){btn('options','▤ Forscherbuch',()=>navigate('book'));hear('end','Geschichte hören');if(!data.stickers.includes('Tukan'))btn('options','Tukan einkleben',protect(async()=>{await collect('Tukan');navigate('book')}));for(const w of ['ma','mi'])btn('nav','Neue Runde mit '+w,()=>{stage=1;target=w;round=0;render();play(w+'-slow')});return}
+if(stage===4||stage===5)btn('options',stage===4?'Andere Spur':'Anderes Wort',()=>{round++;render()});
+if(stage>0)btn('nav','↻ Nochmals',()=>{
+  render();
   if(stage===2)play('wort-'+huntCard().word);
   if(stage===1||stage===3)play(target+'-slow');
 });
-btn('nav',stage===0?'Mit dem Tukan spielen':'Weiter',()=>{stage++;round=0;render();cue()});
-if(stage===2||stage===3)for(const b of $('nav').querySelectorAll('button'))b.disabled=true;
+if(stage===2)btn('options','Anderes Wort',()=>{round++;render();cue()});
+btn('nav',stage===0?'➜ Zum Tukan':'➜ Weiter',protect(async()=>{if(stage===5)await collect('Tukan');stage++;round=0;render();cue()}));
+if(stage===2||stage===3)$('nav').lastElementChild.disabled=true;
 }
 function navigate(page){
- if(busy||rec)return;
+ if(rec)return;
  stop();msg();
- for(const id of ['home','book','game','frog'])$(id).hidden=id!==page;
+ $('homeLink').parentElement.hidden=page==='home';
+ for(const id of ['home','book','game','frog','trail'])$(id).hidden=id!==page;
  if(page==='game'){stage=0;round=0;target='ma';render()}
  if(page==='frog'){frogIndex=0;showFrog()}
+ if(page==='book')showFinds();
  if(page==='book')$('bookText').textContent=data.stickers.length?'Entdeckt: '+data.stickers.join(' und '):'Hier ist Platz für deine Tiere.';
  window.scrollTo(0,0);
 }
@@ -90,17 +95,27 @@ const frogWords=[
 ];
 let frogIndex=0;
 function showFrog(){
- stop();msg();const entry=frogWords[Math.floor(frogIndex/2)],building=frogIndex%2===1;
+ stop();msg();showCompanion('frog','frosch',frogIndex/5);const entry=frogWords[Math.floor(frogIndex/2)],building=frogIndex%2===1;
  $('frogStep').textContent='Teich '+(Math.floor(frogIndex/2)+1)+' von 3';
  $('frogTitle').textContent=building?'Baue das Wort':'Klatsche mit Emilia';
  $('frogHint').textContent=building?'Tippe die Silben der Reihe nach an.':'Sag das Wort. Klatsche jede Silbe. Wie oft klatschst du?';
  $('frogOptions').replaceChildren();$('frogTask').textContent=entry.word;
- $('frogNext').disabled=true;$('frogNext').textContent=frogIndex===5?'Frosch einkleben':'Weiter';
+ $('frogNext').disabled=true;$('frogNext').textContent=frogIndex===5?'✓ Frosch einkleben':'➜ Weiter';
  const hear=()=>play('wort-'+entry.word);
- btn('frogOptions','Wort hören',hear);
+ if(voice('wort-'+entry.word))btn('frogOptions','◖)) Anhören',hear);
+ btn('frogOptions','? Hilfe',()=>{msg(entry.parts.join(' · '));$('frogTask').textContent=entry.parts.join(' · ')});btn('frogOptions','↻ Nochmals',showFrog);
  let placed=0;
- function done(){msg('Geschafft! '+entry.parts.join(' · '));$('frogNext').disabled=false}
- const choices=building?[entry.other,...entry.parts.slice().reverse()]:['1','2','3'];
+ function done(){showCompanion('frog','frosch',(frogIndex+1)/6,true);msg('Geschafft! '+entry.parts.join(' · '));$('frogNext').disabled=false}
+ if(!building){
+ let hops=0;
+ btn('frogOptions','♩ Klatschen',()=>{
+   if(!$('frogNext').disabled)return;
+   hops++;$('frogTask').textContent=entry.parts.slice(0,hops).join(' · ')+(' ○'.repeat(entry.parts.length-hops));
+   showCompanion('frog','frosch',(frogIndex+hops/entry.parts.length)/6,true);
+   if(hops===entry.parts.length)done();
+ });
+}
+const choices=building?[entry.other,...entry.parts.slice().reverse()]:['1','2','3'];
  for(const choice of choices)btn('frogOptions',choice,()=>{
  if(!$('frogNext').disabled)return;
  if(!building){if(Number(choice)===entry.parts.length)done();else msg('Klatsche mit: '+entry.parts.join(' · '));return}
@@ -111,8 +126,8 @@ function showFrog(){
 }
 $('frogNext').onclick=protect(async()=>{
  if(frogIndex<5){frogIndex++;showFrog();return}
- if(!data.stickers.includes('Frosch'))await save({...data,stickers:[...data.stickers,'Frosch']});
+ if(!data.stickers.includes('Frosch'))await collect('Frosch');
  navigate('book');
 });
-async function init(){try{db=await new Promise((ok,no)=>{const r=indexedDB.open('emilia-leserunde',1);r.onupgradeneeded=()=>r.result.createObjectStore('app');r.onsuccess=()=>ok(r.result);r.onerror=no});const saved=await new Promise((ok,no)=>{const r=db.transaction('app').objectStore('app').get('family');r.onsuccess=()=>ok(r.result);r.onerror=no});if(saved)data=saved;navigate('home')}catch{navigate('home');msg('Üben ist möglich. Der lokale Speicher ist hier gesperrt.')}}init();
-</script></html>
+async function init(){try{db=await new Promise((ok,no)=>{const r=indexedDB.open('emilia-leserunde',1);r.onupgradeneeded=()=>r.result.createObjectStore('app');r.onsuccess=()=>ok(r.result);r.onerror=no});const saved=await new Promise((ok,no)=>{const r=db.transaction('app').objectStore('app').get('family');r.onsuccess=()=>ok(r.result);r.onerror=no});if(saved)data=saved;navigate('home')}catch{navigate('home');msg('Üben ist möglich. Der lokale Speicher ist hier gesperrt.')}}
+</script><script src="abenteuer.js"></script></html>

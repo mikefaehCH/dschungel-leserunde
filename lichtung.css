@@ -1,0 +1,209 @@
+body {
+  background: #e5ecdc;
+}
+main {
+  max-width: 885px;
+  border-radius: 30px;
+  background: #fffaeb;
+  padding: clamp(14px, 3vw, 30px);
+}
+#home h1 {
+  text-align: center;
+  font-size: clamp(20px, 4.5vw, 36px);
+  letter-spacing: 0.025em;
+  margin: 18px 0;
+}
+.clearing {
+  position: relative;
+  height: clamp(415px, 66vh, 590px);
+  border-radius: 26px;
+  overflow: hidden;
+  background: #b3cca0 url(art/lichtung.svg) center/100% 100%;
+}
+.clearing aside {
+  position: absolute;
+  left: 34%;
+  top: 33%;
+  width: 32%;
+  height: 44%;
+  margin: 0;
+  pointer-events: none;
+}
+.place {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: clamp(88px, 22%, 152px);
+  min-height: 82px;
+  line-height: 1;
+  display: grid;
+  justify-items: center;
+  padding: 0;
+  margin: 0;
+  color: #193e32;
+  background: transparent;
+}
+.place:active {
+  transform: translate(-50%, -48%) scale(0.96);
+}
+button:active {
+  filter: brightness(0.9);
+}
+button {
+  min-height: 64px;
+  min-width: 64px;
+  touch-action: manipulation;
+}
+svg.animal {
+  display: block;
+  background: transparent;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  touch-action: manipulation;
+}
+.place span {
+  padding: 5px 9px;
+  border-radius: 1em;
+  background: #fff6d6;
+  box-shadow: 0 2px 0 #6c764c;
+  font:
+    bold clamp(11px, 2vw, 16px) Verdana,
+    sans-serif;
+}
+.tukan {
+  left: 22%;
+  top: 25%;
+}
+.affe {
+  left: 76%;
+  top: 22%;
+}
+.frosch {
+  left: 19%;
+  top: 71%;
+}
+.jaguar {
+  left: 81%;
+  top: 69%;
+}
+.buch {
+  left: 49%;
+  top: 84%;
+  width: clamp(86px, 15%, 114px);
+}
+.place.found span:after {
+  content: " ✓";
+}
+.parents {
+  display: inline-block;
+  margin-top: 14px;
+  color: #42624e;
+  font-size: 13px;
+}
+.theatre,
+.companion {
+  position: relative;
+  height: clamp(112px, 20vh, 180px);
+  background: #c9d998 url(art/lichtung.svg) center 60%/100% 220%;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.theatre aside,
+.companion aside {
+  position: absolute;
+  left: 7%;
+  bottom: 0;
+  width: 30%;
+  height: 95%;
+  margin: 0;
+}
+#friend,
+.companion .animal {
+  position: absolute;
+  bottom: 2%;
+  width: 24%;
+  max-width: 130px;
+  left: var(--spot, 45%);
+  transition: left 0.35s ease;
+}
+#friend small {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #fff5c9;
+  border-radius: 50%;
+  padding: 0 5px;
+}
+#model {
+  font-size: clamp(38px, 7vw, 64px);
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+#trail,
+#frog {
+  text-align: center;
+}
+#trailChoices button,
+#frogOptions button {
+  background: #fff8df;
+  color: #224e40;
+  border: 2px solid #7d9874;
+  font-weight: bold;
+}
+#trailTools,
+#nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.stamp {
+  display: inline-grid;
+  width: 108px;
+  justify-items: center;
+  background: #efead0;
+  color: #284836;
+  border: 2px dashed #8b9c71;
+}
+.pose-pop {
+  animation: nod 0.45s ease;
+}
+@keyframes nod {
+  50% {
+    transform: translateY(-10px) rotate(-4deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-height: 800px) and (orientation: landscape) {
+  .clearing {
+    height: clamp(330px, 65vh, 510px);
+  }
+  .place {
+    max-width: 122px;
+  }
+  .buch {
+    max-width: 92px;
+  }
+}
+.sand svg {
+  width: min(270px, 85%);
+  height: 74px;
+  background: #eddbab;
+  border-radius: 40px;
+  touch-action: none;
+}
+.home-icon {
+  font-size: 26px;
+  vertical-align: middle;
+}
+.theatre aside,
+.companion aside {
+  background-position: center bottom;
+}
