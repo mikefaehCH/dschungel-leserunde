@@ -51,7 +51,9 @@ with sync_playwright() as p:
             page.locator("#" + id).get_by_role("button", name=name, exact=True).click()
 
         def nextt():
+            previous = page.locator("#trailStep").text_content()
             page.locator("#trailTools button").last.click()
+            expect(page.locator("#trailStep")).not_to_have_text(previous)
 
         def playall():
             for link, syllable, name in [
