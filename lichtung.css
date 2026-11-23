@@ -207,3 +207,99 @@ svg.animal {
 .companion aside {
   background-position: center bottom;
 }
+
+#book {
+  text-align: center;
+}
+#book aside {
+  height: 105px;
+  margin: 14px auto 0;
+}
+#book h1 {
+  margin: 8px 0;
+}
+#book h2 {
+  font-size: clamp(16px, 3vw, 22px);
+  margin: 24px 0 10px;
+}
+#finds,
+#awards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.album-card,
+.badge {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 5px;
+  background: #f5efdb;
+  color: #284b3a;
+  border: 2px dashed #aba98a;
+  border-radius: 18px;
+  padding: 10px 4px;
+  margin: 0;
+  font-size: clamp(12px, 2vw, 17px);
+}
+.album-card.collected,
+.badge.earned {
+  background: #fff1c8;
+  border: 2px solid #ac8138;
+}
+.album-card .animal,
+.badge .animal {
+  width: min(100%, 102px);
+}
+.album-card small,
+.badge small {
+  font-size: clamp(10px, 1.6vw, 14px);
+  letter-spacing: 0;
+}
+.badge:not(.earned) .animal {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.step-track {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+}
+.step-track i {
+  width: 11px;
+  height: 10px;
+  border: 1px solid #71795b;
+  border-radius: 70% 12% 70% 12%;
+}
+.step-track .filled {
+  background: #397553;
+}
+#bookGoal {
+  font-weight: bold;
+  font-size: clamp(12px, 2vw, 16px);
+  padding: 14px;
+}
+@media (max-width: 490px) {
+  #finds,
+  #awards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+#bookCount {
+  font:
+    bold 11px/1.4 Verdana,
+    sans-serif;
+  background: #244e40;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 0 0 8px 8px;
+}
+#newAward {
+  display: block;
+  margin: 14px auto;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fae6a8;
+  color: #57451c;
+  font-weight: bold;
+}

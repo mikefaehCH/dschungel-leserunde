@@ -33,9 +33,21 @@ function showCompanion(page, id, progress, celebrate = false) {
   scene.lastElementChild.classList.toggle("pose-pop", celebrate);
 }
 
-async function collect(name) {
+const trailLengths = { Tukan: 5, Frosch: 6, Affe: 4, Jaguar: 4 };
+function progressFor(family, name) {
+  const found = family.stickers.includes(name);
+  const saved = family.expeditions?.[name];
+  return {
+    steps: Math.max(found ? trailLengths[name] : 0, saved?.steps || 0),
+    rounds: Math.max(found ? 1 : 0, saved?.rounds || 0),
+  };
+}
+async function recordStep(name, step) {
+  const finished = step === trailLengths[name];
+  if (!db && !finished) return;
   if (!db) throw Error("Der Fund kann gerade nicht gespeichert werden.");
   // Merge into the latest family record, including recordings made in another tab.
+  let newBadges = [];
   await new Promise((resolve, reject) => {
     const tx = db.transaction("app", "readwrite");
     const store = tx.objectStore("app");
@@ -43,10 +55,27 @@ async function collect(name) {
     let updated;
     read.onsuccess = () => {
       const latest = read.result || data;
+      const previous = progressFor(latest, name);
       updated = {
         ...latest,
-        stickers: [...new Set([...latest.stickers, name])],
+        stickers: finished
+          ? [...new Set([...latest.stickers, name])]
+          : latest.stickers,
+        expeditions: {
+          ...latest.expeditions,
+          [name]: {
+            steps: Math.max(previous.steps, step),
+            rounds: previous.rounds + Number(finished),
+          },
+        },
       };
+      if (finished) {
+        const before = badgesFor(latest);
+        newBadges = badgesFor(updated).filter(
+          (badge, index) =>
+            badge[2] >= badge[3] && before[index][2] < before[index][3],
+        );
+      }
       store.put(updated, "family");
     };
     tx.oncomplete = () => {
@@ -57,23 +86,113 @@ async function collect(name) {
       reject(Error("Der Fund konnte nicht gespeichert werden."));
   });
   markDiscoveries();
+  if (newBadges.length) {
+    const notice = $("newAward");
+    notice.textContent =
+      "Abzeichen entdeckt · " + newBadges.map((b) => b[1]).join(" + ");
+    notice.hidden = false;
+  }
 }
 function markDiscoveries() {
+  $("bookCount").textContent =
+    Object.keys(animals).filter((name) => data.stickers.includes(name)).length +
+    " / 4 Tiere";
   for (const [name, id] of Object.entries(animals)) {
     document
       .querySelector(".place." + id)
       .classList.toggle("found", data.stickers.includes(name));
   }
 }
+function badgesFor(family) {
+  const count = Object.keys(animals).filter((name) =>
+    family.stickers.includes(name),
+  ).length;
+  const mostRounds = Math.max(
+    ...Object.keys(animals).map((name) => progressFor(family, name).rounds),
+  );
+  return [
+    ["blatt", "Erster Fund", count, 1, "Entdecke ein Tier."],
+    ["feder", "Tierduo", count, 2, "Entdecke zwei Tiere."],
+    [
+      "stern",
+      "Wieder da",
+      mostRounds,
+      2,
+      "Spiele zweimal mit demselben Tier bis zum Ende.",
+    ],
+    ["kompass", "Camp-Profi", count, 4, "Entdecke alle vier Tiere."],
+  ];
+}
 function showFinds() {
   $("finds").replaceChildren();
-  for (const name of data.stickers.filter((name) => animals[name])) {
+  const discovered = Object.keys(animals).filter((name) =>
+    data.stickers.includes(name),
+  );
+  $("bookText").textContent =
+    discovered.length + " von 4 Tierfreunden entdeckt";
+  for (const [name, id] of Object.entries(animals)) {
+    const { steps, rounds } = progressFor(data, name);
+    const total = trailLengths[name];
     const stamp = document.createElement("button");
-    stamp.className = "stamp";
-    stamp.append(picture(animals[name]), document.createTextNode(name));
-    stamp.onclick = () => startAnimal(name);
+    stamp.className = "album-card" + (rounds ? " collected" : "");
+    const caption = document.createElement("strong");
+    caption.textContent = name;
+    const track = document.createElement("span");
+    track.className = "step-track";
+    track.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < total; i++) {
+      const leaf = document.createElement("i");
+      if (i < steps) leaf.className = "filled";
+      track.append(leaf);
+    }
+    const status = document.createElement("small");
+    status.textContent = rounds
+      ? rounds + (rounds === 1 ? " Runde" : " Runden")
+      : steps + " von " + total + " Schritten";
+    stamp.append(picture(id), caption, track, status);
+    stamp.onclick = () => {
+      if (!steps || rounds) {
+        startAnimal(name);
+        return;
+      }
+      if (name === "Tukan") {
+        navigate("game");
+        stage = steps + 1;
+        render();
+        cue();
+      } else if (name === "Frosch") {
+        navigate("frog");
+        frogIndex = steps;
+        showFrog();
+      } else {
+        startAnimal(name, steps);
+      }
+    };
     $("finds").append(stamp);
   }
+  const badges = badgesFor(data);
+  $("awards").replaceChildren();
+  for (const [icon, title, count, goal, description] of badges) {
+    const badge = document.createElement("div");
+    badge.className = "badge" + (count >= goal ? " earned" : "");
+    const emblem = picture(icon);
+    emblem.firstElementChild.setAttribute("href", "art/abzeichen.svg#" + icon);
+    const label = document.createElement("strong");
+    label.textContent = title;
+    const status = document.createElement("small");
+    status.textContent =
+      count >= goal ? "✓ Geschafft" : Math.min(count, goal) + " / " + goal;
+    badge.setAttribute(
+      "aria-label",
+      title + ". " + description + " " + status.textContent,
+    );
+    badge.append(emblem, label, status);
+    $("awards").append(badge);
+  }
+  const next = badges.find(([, , count, goal]) => count < goal);
+  $("bookGoal").textContent = next
+    ? "Nächstes Abzeichen · " + next[4]
+    : "Alle Abzeichen sind da!";
 }
 const adventures = {
   Affe: {
@@ -99,14 +218,14 @@ let animalName,
   letters,
   complete,
   repeatCount = 0;
-function startAnimal(name) {
+function startAnimal(name, firstStep = 0) {
   if (name === "Tukan" || name === "Frosch") {
     navigate(name === "Tukan" ? "game" : "frog");
     return;
   }
   navigate("trail");
   animalName = name;
-  step = 0;
+  step = firstStep;
   repeatCount = 0;
   renderTrail();
 }
@@ -242,7 +361,7 @@ function renderTrail() {
     step === 3 ? "✓ Fund" : "➜ Weiter",
     protect(async () => {
       if (!complete) return;
-      if (step === 3) await collect(animalName);
+      await recordStep(animalName, step + 1);
       step++;
       renderTrail();
     }),
