@@ -50,6 +50,24 @@ with sync_playwright() as p:
         def choice(id, name):
             page.locator("#" + id).get_by_role("button", name=name, exact=True).click()
 
+        def trace():
+            # Follow every letter of the sand track from its start point.
+            points = page.evaluate("""() => {
+              const svg = document.querySelector('#task svg');
+              return [...svg.querySelectorAll('path')].flatMap(path => {
+                const m = path.getScreenCTM();
+                return Array.from({length: 40}, (_, i) => {
+                  const q = path.getPointAtLength(path.getTotalLength() * i / 39).matrixTransform(m);
+                  return [q.x, q.y];
+                });
+              });
+            }""")
+            page.mouse.move(*points[0])
+            page.mouse.down()
+            for x, y in points:
+                page.mouse.move(x, y, steps=2)
+            page.mouse.up()
+
         def nextt():
             previous = page.locator("#trailStep").text_content()
             page.locator("#trailTools button").last.click()
@@ -100,9 +118,12 @@ with sync_playwright() as p:
             for stage in range(6):
                 if stage in [1, 4, 5]:
                     expect(page.locator("#nav button").last).to_be_disabled()
-                    choice(
-                        "options", {1: "Echo zurückgeben", 4: "M", 5: "Frosch"}[stage]
-                    )
+                    if stage == 4:
+                        # Letters are no shortcut: only the traced path unlocks the station.
+                        expect(page.locator("#options button")).to_have_count(0)
+                        trace()
+                    else:
+                        choice("options", {1: "Echo zurückgeben", 5: "Frosch"}[stage])
                 if stage == 2:
                     choice("options", "mi")
                     choice("options", "ma")
@@ -268,7 +289,7 @@ with sync_playwright() as p:
         page.locator("#riverBoard button").click()
         page.locator("#riverBoard button").click()
         riverbtn("Lampe")
-        riverbtn("Hilfe")
+        page.locator("#riverTools").get_by_role("button", name="? Hilfe", exact=True).click()
         riverbtn("Lama")
         expect(page.locator("#riverTitle")).to_have_text("Ein langes Ohr!")
         page.reload()
@@ -298,7 +319,7 @@ with sync_playwright() as p:
         riverbtn("Zur Fundseite")
         riverbtn("Lagerfeuer")
         for i in range(4):
-            riverbtn("Nächstes Bild")
+            riverbtn("➜ Nächstes Bild")
         expect(page.locator("#riverHint")).to_contain_text("still")
         riverbtn("Für heute fertig")
         print(

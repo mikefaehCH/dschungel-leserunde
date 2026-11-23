@@ -1,8 +1,31 @@
 const practiceKey = "silbenpfad:v1";
+// Stations 1-3 practise the syllable in three different forms: hear or remember it,
+// find it at the start of a word, and match it to a picture (or a word).
 const practicePaths = {
-  MA: { letters: ["M", "A"], other: "MI", word: "MAMA", otherWord: "MIMI" },
-  MI: { letters: ["M", "I"], other: "MA", word: "MIMI", otherWord: "MAMA" },
-  LA: { letters: ["L", "A"], other: "MA", word: "LAMA", otherWord: "MAMA" },
+  MA: {
+    letters: ["M", "A"],
+    other: "MI",
+    word: "MAMA",
+    otherWord: "MIMI",
+    startWord: "MALER",
+    match: ["maler", "lama"],
+  },
+  MI: {
+    letters: ["M", "I"],
+    other: "MA",
+    word: "MIMI",
+    otherWord: "MAMA",
+    startWord: "MIRA",
+    match: ["MIKRO", "LAMA"],
+  },
+  LA: {
+    letters: ["L", "A"],
+    other: "MA",
+    word: "LAMA",
+    otherWord: "MAMA",
+    startWord: "LAMPE",
+    match: ["lama", "maler"],
+  },
 };
 let practiceData = {},
   practiceTarget,
@@ -70,7 +93,7 @@ function practiceHub() {
         : "Los geht’s";
     card.append(name, detail);
   }
-  practiceButton("Forscherbuch", () => navigate("book"), "practiceTools");
+  practiceButton("▤ Forscherbuch", () => navigate("book"), "practiceTools");
 }
 // Separate progress records preserve existing family recordings and animal finds.
 async function savePractice(change, next) {
@@ -138,6 +161,7 @@ function startPractice(target) {
 }
 function practiceTask() {
   $("practiceModel").classList.remove("pose-pop");
+  resetAttempt();
   const target = practiceTarget,
     path = practicePaths[target];
   const entryKey = practiceStory?.id || target;
@@ -149,8 +173,13 @@ function practiceTask() {
   }
   const index = active.step,
     session = active.id;
-  const building = index === 3,
+  const listening = index === 0,
+    inWord = index === 1,
+    matching = index === 2,
+    building = index === 3,
     reading = index === 4;
+  const sound = voice(target.toLowerCase());
+  const pictures = matching && path.match[0] === path.match[0].toLowerCase();
   let built = "",
     mistakes = 0,
     helped = false,
@@ -160,14 +189,24 @@ function practiceTask() {
       ? "Die Silbe im Wort"
       : building
         ? "Baue die Silbe"
-        : "Ein Schritt weiter",
+        : matching
+          ? "Was passt zu " + target + "?"
+          : inWord
+            ? "Wie beginnt das Wort?"
+            : "Ein Schritt weiter",
     reading
       ? "In welchem Wort steckt " + target + "?"
       : building
         ? "Erst " + path.letters[0] + ", dann " + path.letters[1] + "."
-        : voice(target.toLowerCase())
-          ? "Höre hin. Welche Silbe passt?"
-          : "Finde die gleiche Silbe.",
+        : matching
+          ? pictures
+            ? "Tippe auf das Bild, das mit " + target + " beginnt."
+            : "Tippe auf das Wort, das mit " + target + " beginnt."
+          : inWord
+            ? "Tippe auf den Anfang."
+            : sound
+              ? "Höre hin. Welche Silbe passt?"
+              : "Schau gut hin. Gleich versteckt sich die Silbe.",
   );
   if (practiceStory) {
     $("practiceTitle").textContent = practiceStory.title;
@@ -175,11 +214,18 @@ function practiceTask() {
   }
   setStoryScene(practiceStory, index);
   practiceProgress(index);
-  $("practiceModel").textContent = building
-    ? "＿ ＿"
-    : !reading && voice(target.toLowerCase())
-      ? "◖))"
-      : target;
+  const model = $("practiceModel");
+  if (building) model.textContent = "＿ ＿";
+  else if (reading || matching) model.textContent = target;
+  else if (inWord) model.textContent = path.startWord;
+  else if (sound) model.textContent = "◖))";
+  else {
+    model.textContent = target;
+    setTimeout(() => {
+      if (!solved && !helped && model.isConnected && model.textContent === target && practiceTarget === target && practiceData[entryKey]?.active?.id === session && practiceData[entryKey]?.active?.step === index)
+        model.textContent = "🍃";
+    }, 2500);
+  }
   document
     .querySelector("#practice .companion")
     .style.setProperty(
@@ -190,59 +236,51 @@ function practiceTask() {
     ? path.letters
     : reading
       ? [path.word, path.otherWord]
-      : [target, path.other];
-  const buttons = [];
+      : matching
+        ? path.match.map((m) => m.toUpperCase())
+        : [target, path.other];
+  const goal = () =>
+    building
+      ? path.letters[built.length]
+      : reading
+        ? path.word
+        : matching
+          ? path.match[0].toUpperCase()
+          : target;
   function hint() {
     if (solved) return;
     helped = true;
-    if (building) {
-      $("practiceModel").textContent = (built || "＿") + " " + path.letters[1];
-    } else {
-      $("practiceModel").textContent = target;
-    }
-    for (const button of buttons) {
-      const expected = building
-        ? path.letters[built.length]
-        : reading
-          ? path.word
-          : target;
-      button.classList.toggle("guide", button.textContent === expected);
-    }
-    if (voice(target.toLowerCase())) play(target.toLowerCase());
+    if (building) model.textContent = (built || "＿") + " " + path.letters[1];
+    else if (listening) model.textContent = target;
+    else if (inWord)
+      model.replaceChildren(
+        Object.assign(document.createElement("strong"), { textContent: target }),
+        document.createTextNode(path.startWord.slice(2)),
+      );
+    guideTo("practiceChoices", goal());
+    if (sound) play(target.toLowerCase());
   }
+  const buttons = [];
   for (const answer of mixed(options)) {
-    const button = practiceButton(answer, () => {
+    const button = practiceButton(pictures ? "" : answer, () => {
       if (solved) return;
-      const expected = building
-        ? path.letters[built.length]
-        : reading
-          ? path.word
-          : target;
-      if (answer !== expected) {
+      if (answer !== goal()) {
         mistakes++;
-        button.classList.add("miss");
-        $("practiceModel").textContent = building
-          ? (built || "＿") + " ＿"
-          : target;
-        msg(
-          building
-            ? "Schau auf den nächsten Buchstaben."
-            : "Schau auf " + target + ".",
-        );
-        if (mistakes >= 2) hint();
+        missTap("practiceChoices", goal(), button);
+        msg(building ? "Schau auf den nächsten Buchstaben." : "Schau nochmals.");
+        if (mistakes >= 2) helped = true;
         return;
       }
       if (building) {
         built += answer;
-        $("practiceModel").textContent =
-          built + (built.length === 1 ? " ＿" : "");
-        buttons.forEach((b) => b.classList.remove("guide"));
+        model.textContent = built + (built.length === 1 ? " ＿" : "");
+        buttons.forEach((b) => b.classList.remove("guide", "miss"));
         if (built.length < 2) return;
       }
       solved = true;
       buttons.forEach((b) => (b.disabled = true));
-      $("practiceModel").textContent = reading ? path.word : target;
-      $("practiceModel").classList.add("pose-pop");
+      model.textContent = reading ? path.word : inWord ? path.startWord : target;
+      model.classList.add("pose-pop");
       const scene = document.querySelector("#practice .companion");
       scene.style.setProperty(
         "--spot",
@@ -254,22 +292,27 @@ function practiceTask() {
       next.disabled = false;
       msg("Ein Schritt geschafft!");
     });
+    if (pictures) {
+      button.append(illustration(answer.toLowerCase()));
+      button.setAttribute("aria-label", answer);
+      button.classList.add("picture-choice");
+    }
     buttons.push(button);
   }
-  if (voice(target.toLowerCase()))
+  if (sound)
     practiceButton(
-      "Anhören",
+      "◖)) Anhören",
       () => play(target.toLowerCase()),
       "practiceTools",
     );
-  practiceButton("Hilfe", hint, "practiceTools");
-  practiceButton("Nochmals", practiceTask, "practiceTools");
+  practiceButton("? Hilfe", hint, "practiceTools");
+  practiceButton("↻ Nochmals", practiceTask, "practiceTools");
   const next = practiceButton(
     index === 4
       ? practiceStory
-        ? "Mein Tierfund"
-        : "Mein Silbenfund"
-      : "Weiter",
+        ? "✓ Mein Tierfund"
+        : "✓ Mein Silbenfund"
+      : "➜ Weiter",
     () => {
       if (!solved) return;
       savePractice(
@@ -292,18 +335,19 @@ function practiceTask() {
     "practiceTools",
   );
   next.disabled = true;
+  next.classList.add("primary");
   if (practiceStory) {
     const clip = storyClip(practiceStory, index);
-    practiceButton("Geschichte anhören", () => play(clip), "practiceTools");
+    practiceButton("◖)) Geschichte anhören", () => play(clip), "practiceTools");
     play(clip);
     practiceButton(
-      "Zum Dschungelpfad",
+      "⌂ Zum Dschungelpfad",
       () => showJourneyPath(practiceStory.id),
       "practiceTools",
     );
   } else {
-    if (!reading && voice(target.toLowerCase())) play(target.toLowerCase());
-    practiceButton("Zu meinen Silben", practiceHub, "practiceTools");
+    if (listening && sound) play(target.toLowerCase());
+    practiceButton("⌂ Zu meinen Silben", practiceHub, "practiceTools");
   }
 }
 function practiceFinish() {
@@ -316,18 +360,18 @@ function practiceFinish() {
   setStoryScene(practiceStory, 5);
   practiceProgress(5);
   $("practiceModel").textContent = practiceTarget;
-  practiceButton("Nochmals", () => startPractice(practiceTarget));
+  practiceButton("↻ Nochmals", () => startPractice(practiceTarget));
   if (practiceStory) {
     play(storyClip(practiceStory, 5));
-    practiceButton("Geschichte anhören", () =>
+    practiceButton("◖)) Geschichte anhören", () =>
       play(storyClip(practiceStory, 5)),
     );
-    practiceButton("Zum Dschungelpfad", () =>
+    practiceButton("⌂ Zum Dschungelpfad", () =>
       showJourneyPath(practiceStory.id),
     );
-  } else practiceButton("Andere Silbe", practiceHub);
-  practiceButton("Forscherbuch", () => navigate("book"));
-  practiceButton("Für heute fertig", () => navigate("home"), "practiceTools");
+  } else practiceButton("⇄ Andere Silbe", practiceHub);
+  practiceButton("▤ Forscherbuch", () => navigate("book"));
+  practiceButton("⌂ Für heute fertig", () => navigate("home"), "practiceTools");
 }
 $("practiceLink").onclick = () => openPractice();
 $("practiceBook").onclick = () => openPractice();

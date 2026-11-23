@@ -10,31 +10,54 @@ function mixed(items) {
   }
   return copy;
 }
-function visualHint(container, expected, level) {
+// One feedback pattern for every area: the tapped button fades, the row wiggles,
+// and after the second miss the right answer is outlined. Texts never name the answer.
+function guideMatch(button, expected) {
+  const label = (button.getAttribute("aria-label") || button.textContent || "")
+    .trim()
+    .toUpperCase();
+  return label === String(expected).toUpperCase();
+}
+function guideTo(container, expected) {
+  for (const button of $(container).querySelectorAll("button"))
+    button.classList.toggle("guide", guideMatch(button, expected));
+}
+function missTap(container, expected, tapped) {
   attempt.misses++;
+  if (tapped && tapped.classList) tapped.classList.add("miss");
   const box = $(container);
   box.classList.remove("ripple");
   void box.offsetWidth;
   box.classList.add("ripple");
-  if (level >= 2)
-    for (const button of box.querySelectorAll("button"))
-      button.classList.toggle(
-        "guide",
-        button.textContent.toUpperCase() === expected.toUpperCase(),
-      );
+  if (attempt.misses >= 2) guideTo(container, expected);
 }
+// Kept for older call sites: level 2 or more counts as a miss, lower levels only guide.
+function visualHint(container, expected, level, tapped) {
+  if (level >= 2) missTap(container, expected, tapped);
+  else guideTo(container, expected);
+}
+// Points are measured on the first touch, once the drawing is on the page.
 function watchTrace(svg, done) {
-  const points = [...svg.querySelectorAll("path")].flatMap((path) =>
-    Array.from({ length: 16 }, (_, i) => {
-      const p = path.getPointAtLength((path.getTotalLength() * i) / 15);
-      return p
-        .matrixTransform(path.getCTM())
-        .matrixTransform(svg.getCTM().inverse());
-    }),
-  );
+  let points = null,
+    finished = false;
   const covered = new Set();
+  function measure() {
+    const toSvg = svg.getScreenCTM()?.inverse();
+    if (!toSvg) return null;
+    return [...svg.querySelectorAll("path")].flatMap((path) => {
+      const toScreen = path.getScreenCTM();
+      return Array.from({ length: 16 }, (_, i) =>
+        path
+          .getPointAtLength((path.getTotalLength() * i) / 15)
+          .matrixTransform(toScreen)
+          .matrixTransform(toSvg),
+      );
+    });
+  }
   function mark(e) {
-    if (!e.buttons) return;
+    if (finished || !e.buttons) return;
+    points ||= measure();
+    if (!points) return;
     const pos = new DOMPoint(e.clientX, e.clientY).matrixTransform(
       svg.getScreenCTM().inverse(),
     );
@@ -45,8 +68,10 @@ function watchTrace(svg, done) {
       covered.size >= points.length * 0.7 &&
       covered.has(0) &&
       covered.has(points.length - 1)
-    )
+    ) {
+      finished = true;
       done();
+    }
   }
   svg.addEventListener("pointermove", mark);
   svg.addEventListener("pointerdown", mark);
@@ -74,6 +99,9 @@ function riverButton(label, act, icon, where = "riverActions") {
   $(where).append(b);
   return b;
 }
+function riverTool(label, act) {
+  return riverButton(label, act, null, "riverTools");
+}
 function panel(title, hint, icon) {
   stopFire();
   stop();
@@ -81,6 +109,7 @@ function panel(title, hint, icon) {
   $("riverBoard").className = "";
   $("riverBoard").replaceChildren();
   $("riverActions").replaceChildren();
+  $("riverTools").replaceChildren();
   $("riverTitle").textContent = title;
   $("riverHint").textContent = hint;
   const avatar = document.createElement("aside");
@@ -185,6 +214,7 @@ function riverHub() {
 }
 function slide() {
   panel("Der erste Stein", "Bring M zu A.", "affe");
+  if (voice("fluss-stein")) play("fluss-stein");
   const board = $("riverBoard");
   board.className = "liane";
   let armed = false,
@@ -260,6 +290,7 @@ function discovery(clue) {
 }
 function wordScene() {
   panel("Der Zettel", "Öffne die beiden Falten.", "tukan");
+  if (voice("fluss-zettel")) play("fluss-zettel");
   let folded = 0,
     errors = 0,
     helped = false;
@@ -281,13 +312,14 @@ function wordScene() {
     }
     board.textContent = "LAMA";
     $("riverHint").textContent = "Wen suchen wir?";
+    if (voice("fluss-wer")) play("fluss-wer");
     for (const id of mixed(["lama", "lampe"])) {
       const b = riverButton(
         "",
         () => {
           if (id !== "lama") {
             errors++;
-            b.classList.add("miss");
+            missTap("riverActions", "Lama", b);
             if (errors > 1) {
               board.innerHTML = "LA · <strong>MA</strong>";
               helped = true;
@@ -320,10 +352,10 @@ function wordScene() {
       );
       b.setAttribute("aria-label", id === "lama" ? "Lama" : "Lampe");
     }
-    riverButton("Hilfe", () => {
+    riverTool("? Hilfe", () => {
       helped = true;
       board.innerHTML = "LA · <strong>MA</strong>";
-      visualHint("riverActions", "Lama", 1);
+      guideTo("riverActions", "Lama");
     });
   }
   unfold();
@@ -331,6 +363,7 @@ function wordScene() {
 function recap() {
   const clue = river.clue || "spur";
   panel("Die letzte Spur", "Wo willst du nachsehen?", clue);
+  if (voice("fluss-wo")) play("fluss-wo");
   const memories = document.createElement("div");
   memories.className = "river-memories";
   memories.setAttribute("role", "img");
@@ -437,13 +470,15 @@ function fire(frame) {
   const [line, id] = fireFrames[frame];
   panel("Am Lagerfeuer", line, id);
   $("riverScene").className = "fire-scene";
+  if (id !== "feuer") {
+    const flame = illustration("feuer");
+    flame.classList.add("campfire");
+    $("riverScene").append(flame);
+  }
   const audio = "feuer-" + frame;
   if (voice(audio)) play(audio);
   else if (frame === 2 && voice("fluss-lama")) play("fluss-lama");
-  if (frame < 4) {
-    riverButton("Nächstes Bild", () => fire(frame + 1));
-    fireTimer = setInterval(() => fire(frame + 1), 15000);
-  }
+  if (frame < 4) riverButton("➜ Nächstes Bild", () => fire(frame + 1));
   riverButton("Für heute fertig", () => navigate("home"));
 }
 $("riverLink").onclick = () => openRiver();
@@ -550,7 +585,7 @@ function fieldLetter(i) {
       "",
       () => {
         if (id !== answer) {
-          b.classList.add("miss");
+          missTap("riverActions", answer, b);
           return;
         }
         updateRiver(
@@ -566,10 +601,11 @@ function fieldLetter(i) {
     );
     b.setAttribute("aria-label", id);
   }
-  riverButton("Hilfe", () => {
+  riverTool("? Hilfe", () => {
     $("riverBoard").replaceChildren(
       illustration(answer),
       document.createTextNode(word),
     );
+    guideTo("riverActions", answer);
   });
 }

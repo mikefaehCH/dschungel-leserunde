@@ -1,0 +1,141 @@
+/* One toolbar for every area: tools sit in their own row below the answers,
+   with fixed symbols. Answers are light cards, the next step is the dark button. */
+#nav,
+#trailTools,
+#practiceTools,
+#postActions,
+#riverTools,
+#frogTools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 2px dashed #c9d5bd;
+}
+#riverTools:empty {
+  display: none;
+}
+#nav button,
+#trailTools button,
+#practiceTools button,
+#postActions button,
+#riverTools button,
+#frogTools button {
+  min-height: 64px;
+  min-width: 64px;
+  background: #dce8ce;
+  color: #214631;
+  border: 2px solid #b5c8a6;
+}
+#nav button.primary,
+#trailTools button.primary,
+#practiceTools button.primary,
+#frogTools #frogNext {
+  background: #245947;
+  color: #fff;
+  border-color: #245947;
+}
+#options button,
+#practiceChoices button,
+#postChoices button,
+#frogOptions button,
+#trailChoices button {
+  min-height: 64px;
+  min-width: 64px;
+  background: #fff8df;
+  color: #224e40;
+  border: 2px solid #7d9874;
+  font-weight: bold;
+}
+#practiceChoices button.syllable-card {
+  background: #245947;
+  color: #fff;
+}
+button.miss {
+  background: #c6d2ba !important;
+  opacity: 0.55;
+}
+button.guide {
+  outline: 4px dashed #a56820;
+  outline-offset: 2px;
+}
+.picture-choice .animal {
+  width: 96px;
+  height: 80px;
+  display: block;
+}
+/* Forscherbuch: one row with progress from every area. */
+#bookAreas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0 4px;
+}
+.area-tile {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 104px;
+  padding: 8px 4px;
+  border: 2px dashed #b5c09d;
+  border-radius: 14px;
+  background: #f7f2df;
+  opacity: 0.7;
+}
+.area-tile.started {
+  border: 2px solid #b8892e;
+  background: #fff6d9;
+  opacity: 1;
+}
+.area-tile .animal {
+  width: 56px;
+  height: 46px;
+}
+.area-tile small {
+  font-size: 13px;
+  font-weight: bold;
+}
+.area-dots {
+  display: flex;
+  gap: 3px;
+}
+.area-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #8f9c74;
+}
+.area-dots i.filled {
+  background: #2f7a55;
+  border-color: #2f7a55;
+}
+#bookGoal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+#bookGoal .animal {
+  width: 44px;
+  height: 38px;
+}
+/* Lichtung: the post sign shows today's sender; today's place gets a calm ring. */
+#home .postbox .post-sender {
+  width: 70px;
+  height: 52px;
+  background: #fff8df;
+  border-radius: 10px;
+  padding: 2px;
+}
+#home #dailyInvite.today .postbox {
+  box-shadow:
+    0 3px 0 #365441,
+    0 0 0 6px rgba(255, 236, 160, 0.85);
+}
+#home .syllable-stone {
+  overflow: visible;
+}

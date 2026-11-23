@@ -65,14 +65,24 @@ async function refreshPost() {
   $("dailyInvite").hidden = false;
   $("dailyLabel").textContent =
     "Heute mit dem " + post.animal.replace("Affe", "Affen");
+  // The sign shows who writes today, so Emilia does not need to read the label.
+  const box = document.querySelector("#dailyInvite .postbox");
+  if (box) {
+    const pic = picture(animals[post.animal]);
+    pic.classList.add("post-sender");
+    box.replaceChildren(pic);
+  }
+  $("dailyInvite").classList.add("today");
   try {
     const [earned, album] = await Promise.all([
       readPost("post:" + day),
       readPost("post-album"),
     ]);
     if (day !== postDay()) return;
-    if (earned)
+    if (earned) {
       $("dailyLabel").textContent = "Heute geschafft · nochmals spielen";
+      $("dailyInvite").classList.remove("today");
+    }
     if (album) postAlbum = album;
     if (!$("book").hidden) showPostAlbum();
   } catch {
@@ -154,24 +164,47 @@ const postTasks = {
   anfang: "Finde den Anfang",
   ende: "Finde das Ende",
 };
+// Without a recording the syllable is shown briefly and then hidden, so Emilia
+// remembers it instead of matching two shapes that stand side by side.
+function coverLater(element, text, active) {
+  element.textContent = text;
+  setTimeout(() => {
+    if (activePost === active && element.textContent === text)
+      element.textContent = "🍃";
+  }, 2500);
+}
 function openPost(post = postFor(postDay())) {
   if (postSaving) return;
   navigate("daily");
   activePost = post;
+  resetAttempt();
   const { animal, kind, word, a, b, index, cycle } = post;
   const parts = word.split("·");
+  const bare = parts.join("");
   const answer = kind === "anfang" ? a : kind === "ende" ? parts.at(-1) : word;
   let placed = 0,
+    claps = 0,
     solved = false;
   $("postAnimal").replaceChildren(picture(animals[animal]));
   $("postTitle").textContent = postTasks[kind];
   $("postCue").textContent = postStories[animal];
-  $("postModel").textContent = word;
   $("postChoices").replaceChildren();
   $("postActions").replaceChildren();
+  const key = [
+    bare.toLowerCase(),
+    "wort-" + bare,
+    "wort-" + bare[0] + bare.slice(1).toLowerCase(),
+  ].find(voice);
+  const model = $("postModel");
+  if (kind === "finden") {
+    if (key) model.textContent = "◖))";
+    else coverLater(model, word, post);
+  } else if (kind === "klatschen") model.textContent = bare;
+  else if (kind === "ende") model.textContent = bare;
+  else model.textContent = word;
   function done() {
     solved = true;
-    $("postModel").textContent = word + " ✓";
+    model.textContent = word + " ✓";
     msg("Geschafft!");
     $("postChoices").replaceChildren();
     btn("postChoices", "✓ Tiermarke sammeln", async () => {
@@ -181,13 +214,14 @@ function openPost(post = postFor(postDay())) {
         await earnPost(post);
         if (!$("daily").hidden && activePost === post) {
           $("postTitle").textContent = "Deine Tiermarke";
-          $("postModel").replaceChildren(picture(animals[animal]));
+          model.replaceChildren(picture(animals[animal]));
           $("postChoices").replaceChildren();
           $("postActions").replaceChildren();
           msg();
           btn("postChoices", "▤ Forscherbuch", () => navigate("book"));
           btn("postChoices", "↻ Nochmals", () => openPost(post));
-          if(post.index%3===0)btn("postChoices","Brief vom Fluss",()=>openRiver());
+          if (post.index % 3 === 0)
+            btn("postChoices", "Brief vom Fluss", () => openRiver());
         }
       } catch (e) {
         msg(e.message);
@@ -196,13 +230,29 @@ function openPost(post = postFor(postDay())) {
       }
     });
   }
+  function expected() {
+    if (kind === "klatschen")
+      return claps < parts.length ? "♩ Klatschen" : String(parts.length);
+    return kind === "legen" ? word[placed] : answer;
+  }
   if (kind === "klatschen") {
     btn("postChoices", "♩ Klatschen", () => {
-      placed++;
-      $("postModel").textContent =
-        parts.slice(0, placed).join(" · ") + " ○".repeat(parts.length - placed);
-      if (placed === parts.length) done();
+      if (solved || claps >= parts.length) return;
+      claps++;
+      model.textContent =
+        parts.slice(0, claps).join(" · ") + " ○".repeat(parts.length - claps);
+      if (claps === parts.length) msg("Wie oft hast du geklatscht?");
     });
+    for (const value of mixed(["1", "2", "3"]))
+      btn("postChoices", value, (ev) => {
+        if (solved) return;
+        if (claps === parts.length && Number(value) === parts.length) {
+          done();
+          return;
+        }
+        missTap("postChoices", expected(), claps < parts.length ? null : ev.currentTarget);
+        msg(claps < parts.length ? "Klatsche zuerst mit." : "Zähle nochmals.");
+      });
   } else {
     const choices =
       kind === "legen"
@@ -212,30 +262,39 @@ function openPost(post = postFor(postDay())) {
       (((index + cycle) % choices.length) + choices.length) % choices.length;
     const ordered = choices.slice(shift).concat(choices.slice(0, shift));
     for (const value of ordered)
-      btn("postChoices", value, () => {
+      btn("postChoices", value, (ev) => {
         if (solved) return;
-        const expected = kind === "legen" ? word[placed] : answer;
-        if (value !== expected) {
-          msg("Schau nochmals: " + expected);
+        if (value !== expected()) {
+          missTap("postChoices", expected(), ev.currentTarget);
+          msg("Schau nochmals.");
           return;
         }
+        for (const button of $("postChoices").querySelectorAll("button"))
+          button.classList.remove("guide", "miss");
         if (kind === "legen" && ++placed < word.length) {
-          $("postModel").textContent =
-            word + " · " + word.slice(0, placed) + " ＿";
+          model.textContent = word + " · " + word.slice(0, placed) + " ＿";
           msg();
           return;
         }
         done();
       });
   }
-  const bare = parts.join("");
-  const key = [
-    bare.toLowerCase(),
-    "wort-" + bare,
-    "wort-" + bare[0] + bare.slice(1).toLowerCase(),
-  ].find(voice);
   if (key) btn("postActions", "◖)) Anhören", () => play(key));
+  btn("postActions", "? Hilfe", () => {
+    if (solved) return;
+    attempt.help = true;
+    if (kind === "finden") model.textContent = word;
+    if (kind === "ende" || kind === "klatschen") model.textContent = word;
+    if (kind === "anfang")
+      model.replaceChildren(
+        Object.assign(document.createElement("strong"), { textContent: a }),
+        document.createTextNode(word.slice(a.length)),
+      );
+    guideTo("postChoices", expected());
+    if (key) play(key);
+  });
   btn("postActions", "↻ Nochmals", () => openPost(post));
+  if (kind === "finden" && key) play(key);
 }
 $("dailyInvite").onclick = () => openPost();
 init().then(() => {

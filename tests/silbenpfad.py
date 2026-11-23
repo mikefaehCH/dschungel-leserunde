@@ -59,10 +59,10 @@ with sync_playwright() as p:
             button(name, "practiceTools")
 
         page.locator("#practiceLink").click()
-        for target, other, word in [
-            ("MA", "MI", "MAMA"),
-            ("MI", "MA", "MIMI"),
-            ("LA", "MA", "LAMA"),
+        for target, other, word, match, mismatch in [
+            ("MA", "MI", "MAMA", "MALER", "LAMA"),
+            ("MI", "MA", "MIMI", "MIKRO", "LAMA"),
+            ("LA", "MA", "LAMA", "LAMA", "MALER"),
         ]:
             page.locator("#practiceChoices button").filter(
                 has=page.get_by_text(target, exact=True)
@@ -74,31 +74,35 @@ with sync_playwright() as p:
                 expect(
                     page.locator("#practiceTools").get_by_role(
                         "button",
-                        name="Weiter" if station < 4 else "Mein Silbenfund",
+                        name="➜ Weiter" if station < 4 else "✓ Mein Silbenfund",
                         exact=True,
                     )
                 ).to_be_disabled()
+                right, wrong = (match, mismatch) if station == 2 else (target, other)
                 if station < 3:
-                    button(other)
+                    button(wrong)
                     expect(page.locator("#practiceTrack")).to_have_attribute(
                         "aria-label", str(station) + " von 5 Stationen"
                     )
+                    # A miss fades the tapped answer; the second one outlines the right one.
+                    expect(page.locator("#practiceChoices button.miss")).to_have_count(1)
+                    expect(page.locator("#feedback")).not_to_contain_text(right)
                     if station == 1:
-                        button(other)
+                        button(wrong)
                         expect(
                             page.locator("#practiceChoices button.guide")
                         ).to_have_text(target)
-                    button(target)
+                    button(right)
                     if station == 0:
-                        tool("Nochmals")
-                        button(target)
+                        tool("↻ Nochmals")
+                        button(right)
                 elif station == 3:
                     button(target[1])
                     button(target[0])
                     button(target[1])
                 else:
                     button(word)
-                tool("Weiter" if station < 4 else "Mein Silbenfund")
+                tool("➜ Weiter" if station < 4 else "✓ Mein Silbenfund")
                 if station < 4:
                     page.wait_for_function(
                         "([t,s])=>practiceData[t]?.active?.step===s",
@@ -114,7 +118,7 @@ with sync_playwright() as p:
                         has=page.get_by_text(target, exact=True)
                     ).click()
             expect(page.locator("#practiceTitle")).to_have_text("Dein Silbenfund")
-            button("Andere Silbe")
+            button("⇄ Andere Silbe")
         for target in ["MA", "MI", "LA"]:
             saved = page.evaluate("(target)=>practiceData[target]", target)
             assert saved["rounds"] == 1 and "active" not in saved
@@ -129,8 +133,8 @@ with sync_playwright() as p:
             "aria-label", "0 von 5 Stationen"
         )
         button("MA")
-        tool("Weiter")
-        tool("Zu meinen Silben")
+        tool("➜ Weiter")
+        tool("⌂ Zu meinen Silben")
         expect(
             page.locator("#practiceChoices button").filter(
                 has=page.get_by_text("MA", exact=True)
@@ -173,7 +177,7 @@ with sync_playwright() as p:
             ).click()
             expect(
                 page.locator("#practiceTools").get_by_role(
-                    "button", name="Anhören", exact=True
+                    "button", name="◖)) Anhören", exact=True
                 )
             ).to_be_visible()
             assert page.evaluate("player.src===data.clips.la")

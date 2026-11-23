@@ -99,3 +99,22 @@ python tests/voice_bundle.py
 ```sh
 python tests/dschungelpfad.py
 ```
+## Rückmeldung, Forscherbuch, Szenen, Stimmen und Sicherung
+
+Neue Browserprüfungen (Chromium; mit `CAMP_BROWSER=webkit` auch in WebKit):
+
+```sh
+python tests/rueckmeldung.py      # Fehler blasst ab, zweiter Fehler umrandet, kein Lösungstext
+python tests/forscherbuch.py      # Kopfzeile aus allen Bereichen, altes Album unverändert
+python tests/szenen.py            # Werkzeugleiste, Symbole, 64 px, Post-Schild
+python tests/stimmen.py           # jeder gespielte Clip hat eine Studio-Karte (CAMP_TEST_PASSWORD)
+python tests/sicherung.py         # Fortschritt exportieren und importieren, Verschlüsselungsskript
+```
+
+## Studio und Sprachpaket verschlüsseln
+
+`tools/encrypt.py` verschlüsselt Studio und Sprachpaket mit einem Passwort aus der Umgebungsvariablen `CAMP_PASSWORD`. Jeder Lauf erzeugt ein neues Salt und pro Datei eine neue Nonce; beide stehen im Dateikopf (`EJC1`). Die Anmeldeseite liest beide Formate. Klartextdateien nie ins Repository legen. Für einen Passwortwechsel zuerst mit dem alten Passwort entschlüsseln, dann beide Dateien in einem Lauf mit dem neuen Passwort verschlüsseln und die Versionsparameter in `eltern.html` erhöhen.
+
+## Fortschritt sichern
+
+Im Elternbereich unter «Emilias Fortschritt sichern» lässt sich der Fortschritt ohne Aufnahmen als Datei exportieren und wieder importieren. Das Camp fragt nach der ersten Berührung nach dauerhaftem Speicher; der Elternbereich zeigt, ob der Browser ihn gewährt hat.
