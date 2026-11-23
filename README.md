@@ -1,2 +1,3 @@
-# dschungel-leserunde
-Die mitgelieferten MP3-Dateien wurden mit der deutschen Piper-Stimme Kerstin (medium) erstellt. Eigene Aufnahmen im Stimmenstudio haben Vorrang. Quelle des Sprachmodells und Angaben zum Trainingsdatensatz (CC0): https://huggingface.co/rhasspy/piper-voices/blob/main/de/de_DE/kerstin/medium/MODEL_CARD
+# Emilias Dschungelcamp
+
+Startseite, Tukan-Mission, Forscherbuch und Stimmenstudio. Sprachaufnahmen werden im Elternbereich aufgenommen oder importiert und lokal im Browser gespeichert. Stimmenpakete lassen sich zwischen Geräten übertragen.
