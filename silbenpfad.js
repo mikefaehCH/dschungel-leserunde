@@ -6,13 +6,22 @@ const practicePaths = {
 };
 let practiceData = {},
   practiceTarget,
-  practiceBusy = false;
+  practiceBusy = false,
+  practiceStory = null,
+  practiceVisit = 0;
 
 async function openPractice() {
+  if (practiceBusy) return;
+  const visit = ++practiceVisit;
+  practiceStory = null;
   navigate("practice");
+  setStoryScene(null, 0);
   try {
-    if (db) practiceData = (await readPost(practiceKey)) || {};
+    const saved = db ? (await readPost(practiceKey)) || {} : practiceData;
+    if (visit !== practiceVisit || $("practice").hidden) return;
+    practiceData = saved;
   } catch {
+    if (visit !== practiceVisit) return;
     practiceData = {};
   }
   if (!$("practice").hidden) practiceHub();
@@ -67,6 +76,9 @@ function practiceHub() {
 async function savePractice(change, next) {
   if (practiceBusy) return;
   practiceBusy = true;
+  const visit = practiceVisit;
+  const story = practiceStory;
+  const storageKey = story ? journeyKey : practiceKey;
   const controls = [...$("practice").querySelectorAll("button")].map(
     (button) => [button, button.disabled],
   );
@@ -76,15 +88,19 @@ async function savePractice(change, next) {
       await new Promise((resolve, reject) => {
         const tx = db.transaction("app", "readwrite");
         const store = tx.objectStore("app");
-        const req = store.get(practiceKey);
+        const req = store.get(storageKey);
         let updated;
         req.onsuccess = () => {
           updated = req.result || {};
           change(updated);
-          store.put(updated, practiceKey);
+          store.put(updated, storageKey);
         };
         tx.oncomplete = () => {
-          practiceData = updated;
+          if (visit === practiceVisit) practiceData = updated;
+          if (story) {
+            journeyProgress = updated;
+            renderJourney();
+          }
           resolve();
         };
         tx.onabort = () =>
@@ -93,7 +109,7 @@ async function savePractice(change, next) {
     } else {
       change(practiceData);
     }
-    if (!$("practice").hidden) next();
+    if (visit === practiceVisit && !$("practice").hidden) next();
     if (!db) msg("Dieser Weg bleibt nur bis zum Neuladen erhalten.");
   } catch (e) {
     msg(e.message);
@@ -107,25 +123,28 @@ async function savePractice(change, next) {
 function startPractice(target) {
   if (practiceBusy) return;
   practiceTarget = target;
-  const saved = practiceData[target];
+  const entryKey = practiceStory?.id || target;
+  const saved = practiceData[entryKey];
   if (saved?.active) {
     practiceTask();
     return;
   }
   savePractice((state) => {
-    const path = state[target] || {};
+    const path = state[entryKey] || {};
     // Reuse an active session created in another tab.
     if (!path.active) path.active = { id: crypto.randomUUID(), step: 0 };
-    state[target] = path;
+    state[entryKey] = path;
   }, practiceTask);
 }
 function practiceTask() {
   $("practiceModel").classList.remove("pose-pop");
   const target = practiceTarget,
     path = practicePaths[target];
-  const active = practiceData[target]?.active;
+  const entryKey = practiceStory?.id || target;
+  const active = practiceData[entryKey]?.active;
   if (!active) {
-    practiceHub();
+    if (practiceStory) practiceFinish();
+    else practiceHub();
     return;
   }
   const index = active.step,
@@ -150,6 +169,11 @@ function practiceTask() {
           ? "Höre hin. Welche Silbe passt?"
           : "Finde die gleiche Silbe.",
   );
+  if (practiceStory) {
+    $("practiceTitle").textContent = practiceStory.title;
+    $("practiceHint").textContent = practiceStory.scenes[index];
+  }
+  setStoryScene(practiceStory, index);
   practiceProgress(index);
   $("practiceModel").textContent = building
     ? "＿ ＿"
@@ -158,7 +182,10 @@ function practiceTask() {
       : target;
   document
     .querySelector("#practice .companion")
-    .style.setProperty("--spot", 40 + index * 8 + "%");
+    .style.setProperty(
+      "--spot",
+      (practiceStory ? 32 + index * 5 : 40 + index * 8) + "%",
+    );
   const options = building
     ? path.letters
     : reading
@@ -217,9 +244,13 @@ function practiceTask() {
       $("practiceModel").textContent = reading ? path.word : target;
       $("practiceModel").classList.add("pose-pop");
       const scene = document.querySelector("#practice .companion");
-      scene.style.setProperty("--spot", 48 + index * 8 + "%");
-      scene.lastElementChild.classList.add("pose-pop");
+      scene.style.setProperty(
+        "--spot",
+        (practiceStory ? 37 + index * 5 : 48 + index * 8) + "%",
+      );
+      scene.querySelector(".animal").classList.add("pose-pop");
       practiceProgress(index + 1);
+      setStoryScene(practiceStory, index + 1);
       next.disabled = false;
       msg("Ein Schritt geschafft!");
     });
@@ -234,12 +265,16 @@ function practiceTask() {
   practiceButton("Hilfe", hint, "practiceTools");
   practiceButton("Nochmals", practiceTask, "practiceTools");
   const next = practiceButton(
-    index === 4 ? "Mein Silbenfund" : "Weiter",
+    index === 4
+      ? practiceStory
+        ? "Mein Tierfund"
+        : "Mein Silbenfund"
+      : "Weiter",
     () => {
       if (!solved) return;
       savePractice(
         (state) => {
-          const saved = state[target];
+          const saved = state[entryKey];
           if (saved?.active?.id !== session || saved.active.step !== index)
             return;
           saved.observations ||= { first: 0, retry: 0, helped: 0 };
@@ -251,23 +286,48 @@ function practiceTask() {
           } else saved.active.step++;
         },
         () =>
-          practiceData[target]?.active ? practiceTask() : practiceFinish(),
+          practiceData[entryKey]?.active ? practiceTask() : practiceFinish(),
       );
     },
     "practiceTools",
   );
   next.disabled = true;
-  if (!reading && voice(target.toLowerCase())) play(target.toLowerCase());
-  practiceButton("Zu meinen Silben", practiceHub, "practiceTools");
+  if (practiceStory) {
+    const clip = storyClip(practiceStory, index);
+    practiceButton("Geschichte anhören", () => play(clip), "practiceTools");
+    play(clip);
+    practiceButton(
+      "Zum Dschungelpfad",
+      () => showJourneyPath(practiceStory.id),
+      "practiceTools",
+    );
+  } else {
+    if (!reading && voice(target.toLowerCase())) play(target.toLowerCase());
+    practiceButton("Zu meinen Silben", practiceHub, "practiceTools");
+  }
 }
 function practiceFinish() {
-  practicePanel("Dein Silbenfund", "Du hast mit " + practiceTarget + " geübt.");
+  practicePanel(
+    practiceStory ? practiceStory.ending : "Dein Silbenfund",
+    practiceStory
+      ? practiceStory.scenes[5]
+      : "Du hast mit " + practiceTarget + " geübt.",
+  );
+  setStoryScene(practiceStory, 5);
   practiceProgress(5);
   $("practiceModel").textContent = practiceTarget;
   practiceButton("Nochmals", () => startPractice(practiceTarget));
-  practiceButton("Andere Silbe", practiceHub);
+  if (practiceStory) {
+    play(storyClip(practiceStory, 5));
+    practiceButton("Geschichte anhören", () =>
+      play(storyClip(practiceStory, 5)),
+    );
+    practiceButton("Zum Dschungelpfad", () =>
+      showJourneyPath(practiceStory.id),
+    );
+  } else practiceButton("Andere Silbe", practiceHub);
   practiceButton("Forscherbuch", () => navigate("book"));
   practiceButton("Für heute fertig", () => navigate("home"), "practiceTools");
 }
-$("practiceLink").onclick = openPractice;
-$("practiceBook").onclick = openPractice;
+$("practiceLink").onclick = () => openPractice();
+$("practiceBook").onclick = () => openPractice();

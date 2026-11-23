@@ -117,6 +117,7 @@ function markDiscoveries() {
   $("bookCount").textContent =
     Object.keys(animals).filter((name) => data.stickers.includes(name)).length +
     " / 4 Tiere";
+  renderJourney();
   for (const [name, id] of Object.entries(animals)) {
     document
       .querySelector(".place." + id)
@@ -140,7 +141,7 @@ function badgesFor(family) {
       2,
       "Spiele zweimal mit demselben Tier bis zum Ende.",
     ],
-    ["kompass", "Camp-Profi", count, 4, "Entdecke alle vier Tiere."],
+    ["kompass", "Camp-Profi", count, 4, "Entdecke die vier Tiere der Lichtung."],
   ];
 }
 function showFinds() {

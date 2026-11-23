@@ -1,0 +1,254 @@
+#home {
+  background: #b8c98a;
+  border-radius: 20px;
+  overflow: hidden;
+}
+#home .clearing {
+  border-radius: 20px 20px 0 0;
+}
+#home .parent-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px;
+}
+#voiceSetup {
+  flex-basis: 100%;
+  order: 2;
+}
+.path-invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  color: #234b39;
+  font-weight: bold;
+  font-size: 15px;
+  text-decoration: none;
+}
+.path-invite span {
+  font-size: 28px;
+}
+#expeditionPath {
+  position: relative;
+  text-align: center;
+  padding: 24px 20px 36px;
+  background:
+    radial-gradient(ellipse at 0 18%, #8eae73 0 12%, transparent 12.2%),
+    radial-gradient(ellipse at 100% 57%, #8eae73 0 16%, transparent 16.2%),
+    linear-gradient(#b8c98a, #99b685);
+}
+#expeditionPath h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 0 0 18px;
+}
+#journeyStops {
+  position: relative;
+  max-width: 940px;
+  margin: auto;
+  padding: 30px 0;
+  list-style: none;
+}
+#journeyStops::before {
+  content: "";
+  position: absolute;
+  left: 43%;
+  top: 0;
+  bottom: 0;
+  width: 14%;
+  border-radius: 45%;
+  background: #e7cc91;
+  transform: skewX(-7deg);
+  box-shadow:
+    inset 3px 0 #d8bf85,
+    inset -3px 0 #d8bf85;
+}
+.journey-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+}
+#journeyStops .journey-stop {
+  width: 45%;
+  min-height: 310px;
+  margin-right: auto;
+  justify-content: center;
+}
+#journeyStops .journey-stop:nth-child(even) {
+  margin-left: auto;
+  margin-right: 0;
+}
+#journeyStops .journey-stop::before {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: -25%;
+  top: 62%;
+  height: 20px;
+  border-radius: 50%;
+  background: #e7cc91;
+  z-index: 0;
+}
+#journeyStops .journey-stop:nth-child(even)::before {
+  left: -25%;
+  right: 25%;
+}
+.journey-stop button {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 270px;
+  padding: 10px;
+  margin: 0;
+  color: #274b37;
+  background: transparent;
+}
+.journey-stop button:disabled {
+  opacity: 1;
+}
+.journey-stop .animal {
+  width: min(100%, 175px);
+  height: 145px;
+  transition: transform 0.25s ease;
+}
+.journey-stop.ready button:active .animal {
+  transform: translateY(-6px);
+}
+.journey-stop.waiting .animal {
+  filter: grayscale(1);
+  opacity: 0.58;
+}
+.journey-stop.waiting button {
+  filter: grayscale(1);
+  color: #5b6455;
+}
+.journey-stop strong,
+.journey-stop button > span {
+  max-width: 100%;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #f0dfb3;
+  box-shadow: 0 2px #9d885c;
+}
+.journey-stop strong {
+  font-size: clamp(15px, 2.4vw, 21px);
+}
+.journey-stop button > span {
+  font-size: 13px;
+}
+.journey-stop small {
+  position: relative;
+  max-width: 240px;
+  font-size: 11px;
+  color: #3b563b;
+  letter-spacing: 0.02em;
+}
+.journey-stop.discovered strong::after {
+  content: " ✓";
+}
+#journeyFinds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+#journeyFinds .journey-stop {
+  background: #f2ecd7;
+  border-radius: 18px;
+  padding-bottom: 12px;
+}
+#journeyFinds .animal {
+  height: 110px;
+}
+#journeyFinds strong {
+  font-size: 15px;
+}
+#journeyFinds button > span {
+  font-size: 11px;
+}
+#practice.story-mode #practiceTrack {
+  display: none;
+}
+#practice.story-mode #practiceModel {
+  font-size: clamp(40px, 6vw, 58px);
+  line-height: 1.2;
+  margin: 6px 0;
+}
+#practice.story-mode #practiceHint {
+  font-size: 15px;
+  line-height: 1.45;
+}
+#practice.story-mode .companion {
+  height: clamp(180px, 26svh, 300px);
+}
+.story-prop {
+  position: absolute;
+  bottom: 4%;
+  left: 35%;
+  right: 5%;
+  display: flex;
+  justify-content: space-around;
+  gap: 4px;
+  color: #708459;
+}
+.story-prop i {
+  font-size: 24px;
+  font-style: normal;
+  opacity: 0.3;
+}
+.story-prop i.found {
+  color: #c58b37;
+  opacity: 1;
+}
+[data-story="elefant"] .story-prop {
+  border-bottom: 7px solid #806342;
+}
+[data-story="elefant"] .story-prop i {
+  width: 18%;
+  height: 16px;
+  color: transparent;
+  background: #dab578;
+  transform: rotate(-4deg);
+}
+[data-story="faultier"] .story-prop {
+  border-bottom: 6px solid #d9bd81;
+  border-radius: 0 0 50% 50%;
+}
+[data-story="krokodil"] .story-prop i {
+  border-left: 3px solid #789351;
+  padding-left: 4px;
+}
+@media (min-width: 900px) and (max-height: 900px) and (orientation: landscape) {
+  #practice.story-mode > .companion {
+    height: max(330px, calc(100svh - 190px));
+  }
+  #practice.story-mode .story-prop i {
+    font-size: 34px;
+  }
+}
+@media (max-width: 490px) {
+  #expeditionPath {
+    padding: 20px 10px;
+  }
+  #journeyStops .journey-stop {
+    width: 64%;
+    min-height: 280px;
+  }
+  #journeyFinds {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .path-invite {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-stop .animal {
+    transition: none;
+  }
+}
