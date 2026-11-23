@@ -371,4 +371,3 @@ function renderTrail() {
 }
 $("monkeyLink").onclick = () => startAnimal("Affe");
 $("catLink").onclick = () => startAnimal("Jaguar");
-init().then(markDiscoveries);
