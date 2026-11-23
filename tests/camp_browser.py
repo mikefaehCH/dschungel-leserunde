@@ -224,7 +224,7 @@ with sync_playwright() as p:
         page.select_option("#clip", "ma")
         expect(page.locator("#listen")).to_be_disabled()
         page.locator("#file").set_input_files(
-            {"name": "dummy.wav", "mimeType": "audio/wav", "buffer": buf.getvalue()[:44] + bytes(16000)}
+            {"name": "dummy.wav", "mimeType": "audio/wav", "buffer": buf.getvalue()[:44] + buf.getvalue()[8044:] + buf.getvalue()[44:8044]}
         )
         click("use")
         expect(page.locator("#feedback")).to_contain_text("gespeichert")
