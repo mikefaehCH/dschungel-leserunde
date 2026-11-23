@@ -1,0 +1,14 @@
+<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EMILIAS DSCHUNGELCAMP – Elternzugang</title><link rel="stylesheet" href="camp.css"><style>input{text-transform:none}</style><main><aside aria-label="Emilia" role="img"></aside><h1>Elternbereich</h1><form><label>Benutzername <input id="user" autocomplete="username" required></label><label>Passwort <input id="pw" type="password" autocomplete="current-password" required></label><button>Anmelden</button></form><p id="status" role="status"></p><a href="./">Zum Dschungelcamp</a></main><script>
+document.querySelector('form').onsubmit=async e=>{
+ e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;
+ const status=document.querySelector('#status');status.textContent='Anmeldung läuft …';
+ try{
+ const raw=await fetch('studio.bin');if(!raw.ok)throw Error('download');const bytes=await raw.arrayBuffer();
+ const credential=document.querySelector('#user').value.trim()+':'+document.querySelector('#pw').value;
+ const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(credential),'PBKDF2',false,['deriveKey']);
+ const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:new Uint8Array([34, 226, 2, 70, 106, 75, 56, 130, 235, 33, 245, 47, 219, 199, 102, 55]),iterations:600000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['decrypt']);
+ const html=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array([56, 63, 177, 32, 19, 218, 157, 215, 30, 169, 184, 12])},key,bytes);
+ document.open();document.write(new TextDecoder().decode(html));document.close();
+ }catch(err){status.textContent=err.name==='OperationError'?'Benutzername oder Passwort stimmt nicht.':'Studio konnte nicht geöffnet werden. Lade die Seite erneut.';button.disabled=false}
+};
+</script></html>
