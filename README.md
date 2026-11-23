@@ -10,6 +10,12 @@ Das Flussbild auf der Lichtung öffnet drei kurze Besuche. Emilia verbindet M un
 
 Die Flussexpedition ist auch vor der ersten Aufnahme spielbar. Zum Einstieg kann Mike im Studio zuerst MA als zusammenhängende Silbe aufnehmen. Die Familienprofile speichern ihre Aufnahmen getrennt. Für Tests erzeugte Töne bleiben im jeweiligen Testbrowser.
 
+## Silbenpfad
+
+Auf der Lichtung öffnet die Blattmarke MA, MI und LA. Jeder Weg enthält drei Zuordnungen, eine Buchstabenfolge und eine Wortaufgabe. Angefangene Wege lassen sich fortsetzen. Im Forscherbuch öffnet «Meine Silbenfunde» die Sammlung mit abgeschlossenen Runden und dem aktuellen Schritt. Wiederholungen erhalten frühere Funde.
+
+Für den Hörmodus reichen die drei zusammenhängend gesprochenen Silben MA, MI und LA. Im Elternbereich gibt es dafür eine eigene Kartengruppe. Ohne Aufnahme zeigt die Zuordnungsaufgabe die Zielsilbe. Die gespeicherten Beobachtungen unterscheiden den ersten Versuch, weitere Versuche und Hilfe.
+
 ## Browserprüfung
 
 Der Test öffnet zwei frische Browserkontexte im iPad-mini-Format. Er prüft die vier Missionen, den Speicher, die Anmeldung, eine simulierte Mikrofonaufnahme, den Austausch von Clips und den Import eines alten Pakets. Jeder Kontext verwendet ausschliesslich Testdaten.
@@ -59,3 +65,9 @@ Auf der Lichtung erscheint jeden lokalen Kalendertag ein kurzer Brief. Die erste
 | 20.12. | Affe | Den Anfang von BANANE finden |
 | 21.12. | Tukan | Die letzte Silbe von MI·RA finden |
 | 22.12. | Frosch | MA·LER in Silben klatschen |
+
+Der Silbenpfad hat eine eigene Browserprüfung. Mit CAMP_TEST_PASSWORD prüft sie zusätzlich die LA-Aufnahmekarte und deren Verwendung im Camp.
+
+```sh
+python tests/silbenpfad.py
+```

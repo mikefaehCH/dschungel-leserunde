@@ -3,13 +3,13 @@ document.querySelector('form').onsubmit=async e=>{
  e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;
  const status=document.querySelector('#status');status.textContent='Anmeldung läuft …';
  try{
- const raw=await fetch('studio.bin?v=4');if(!raw.ok)throw Error('download');const bytes=await raw.arrayBuffer();
+ const raw=await fetch('studio.bin?v=5');if(!raw.ok)throw Error('download');const bytes=await raw.arrayBuffer();
  const username=document.querySelector('#user').value.trim().toLowerCase();
  if(!['teresa','mike'].includes(username))throw new DOMException('Login','OperationError');
  const credential=document.querySelector('#pw').value;
  const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(credential),'PBKDF2',false,['deriveKey']);
  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:new Uint8Array([176, 48, 72, 24, 204, 232, 60, 218, 168, 14, 107, 230, 249, 0, 141, 18]),iterations:600000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['decrypt']);
- const html=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array([194, 120, 209, 6, 209, 183, 35, 182, 28, 67, 152, 1])},key,bytes);
+ const html=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array([108, 101, 62, 25, 236, 152, 89, 232, 226, 218, 170, 187])},key,bytes);
  document.open();document.write(new TextDecoder().decode(html).replace('<html lang="de-CH"','<html lang="de-CH" data-parent="'+username+'"'));document.close();
  }catch(err){status.textContent=err.name==='OperationError'?'Benutzername oder Passwort stimmt nicht.':'Studio konnte nicht geöffnet werden. Lade die Seite erneut.';button.disabled=false}
 };

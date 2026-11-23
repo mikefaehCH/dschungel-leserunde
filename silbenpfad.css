@@ -1,0 +1,107 @@
+.werkstatt {
+  left: 49%;
+  top: 13%;
+  width: clamp(90px, 15%, 125px);
+}
+.werkstatt .animal {
+  width: 70px;
+}
+#practice {
+  text-align: center;
+}
+#practiceModel {
+  font-size: clamp(40px, 7vw, 68px);
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  margin: 12px 0;
+}
+#practiceTrack {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  color: #397553;
+  margin: 8px 0;
+}
+#practiceChoices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+#practiceChoices button {
+  min-width: 110px;
+  min-height: 80px;
+  font-size: clamp(24px, 4vw, 38px);
+}
+#practiceChoices button.syllable-card {
+  display: grid;
+  gap: 8px;
+  flex: 1 1 170px;
+  max-width: 300px;
+}
+.syllable-card small {
+  font-size: 13px;
+}
+#practiceTools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media (max-width: 490px) {
+  .werkstatt {
+    top: 14%;
+    width: 92px;
+  }
+  .werkstatt .animal {
+    width: 48px;
+  }
+}
+@media (min-width: 900px) and (max-height: 900px) and (orientation: landscape) {
+  #practice {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    column-gap: 20px;
+    align-items: start;
+    padding-top: 12px;
+  }
+  #practice > .companion {
+    grid-column: 1;
+    grid-row: 1 / 7;
+    height: max(330px, calc(100svh - 190px));
+    margin: 0;
+    background-size: auto 100%;
+  }
+  #practice > .companion aside {
+    width: 55%;
+    height: 80%;
+  }
+  #practice > .companion .animal {
+    width: 35%;
+    max-width: 160px;
+  }
+  #practiceTitle,
+  #practiceHint,
+  #practiceTrack,
+  #practiceModel,
+  #practiceChoices,
+  #practiceTools {
+    grid-column: 2;
+    min-width: 0;
+  }
+  #practiceTitle {
+    font-size: 30px;
+    margin: 6px 0;
+  }
+  #practiceHint {
+    margin: 6px 0;
+  }
+  #practiceModel,
+  #practiceChoices {
+    margin: 8px 0;
+  }
+  #practiceTools button {
+    margin: 3px;
+    padding: 10px 14px;
+  }
+}
