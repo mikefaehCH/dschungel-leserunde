@@ -38,6 +38,7 @@ with sync_playwright() as p:
             ctx.route(url + "**", serve)
         page = ctx.new_page()
         page.set_default_timeout(10000)
+        page.set_default_navigation_timeout(60000)
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.goto(url)
