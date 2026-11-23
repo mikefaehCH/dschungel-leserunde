@@ -17,12 +17,6 @@
   header {
     padding-bottom: 8px;
   }
-  #home h1 {
-    margin: 12px 0;
-  }
-  .clearing {
-    height: clamp(415px, calc(100svh - 400px), 850px);
-  }
   #riverScene {
     height: clamp(240px, 42svh, 580px);
   }
@@ -32,44 +26,6 @@
   }
 }
 @media (min-width: 900px) and (max-height: 900px) and (orientation: landscape) {
-  #home {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 290px;
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-    height: max(500px, calc(100svh - 44px));
-    gap: 12px;
-    align-items: start;
-  }
-  #home h1 {
-    grid-column: 1 / -1;
-    margin: 4px 0;
-    font-size: 28px;
-  }
-  .clearing {
-    grid-column: 1;
-    grid-row: 2 / 5;
-    height: 100%;
-    min-height: 0;
-  }
-  .post-invite {
-    grid-column: 2;
-    grid-row: 2;
-    margin: 0;
-    padding: 12px;
-    gap: 8px;
-  }
-  .river-entry {
-    grid-column: 2;
-    grid-row: 3;
-    flex-direction: column;
-    align-items: start;
-    margin: 0;
-  }
-  .parents {
-    grid-column: 2;
-    grid-row: 4;
-    margin: 0;
-  }
   #river {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
