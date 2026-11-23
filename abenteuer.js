@@ -124,33 +124,112 @@ function markDiscoveries() {
       .classList.toggle("found", data.stickers.includes(name));
   }
 }
-function badgesFor(family) {
-  const count = Object.keys(animals).filter((name) =>
+// Progress from the other areas, read from their own records before the book opens.
+let areaState = { practice: {}, river: {}, post: { count: 0 } };
+async function loadAreas() {
+  try {
+    const [practice, river, post] = await Promise.all([
+      readPost("silbenpfad:v1"),
+      readPost("fluss:v1"),
+      readPost("post-album"),
+    ]);
+    areaState = {
+      practice: practice || {},
+      river: river || {},
+      post: post || { count: 0 },
+    };
+  } catch {
+    /* The book still shows the animal friends without storage. */
+  }
+  return areaState;
+}
+function areaTiles(family, areas = areaState) {
+  const animalsFound = Object.keys(animals).filter((name) =>
     family.stickers.includes(name),
   ).length;
-  const mostRounds = Math.max(
-    ...Object.keys(animals).map((name) => progressFor(family, name).rounds),
-  );
+  const paths = Object.values(areas.practice || {}).filter(
+    (path) => path?.rounds,
+  ).length;
   return [
-    ["blatt", "Erster Fund", count, 1, "Entdecke ein Tier."],
-    ["feder", "Tierduo", count, 2, "Entdecke zwei Tiere."],
     [
-      "stern",
-      "Wieder da",
-      mostRounds,
-      2,
-      "Spiele zweimal mit demselben Tier bis zum Ende.",
+      "Tiere",
+      "art/animals.svg#affe",
+      animalsFound +
+        (typeof discoveredJourneyCount === "function" ? discoveredJourneyCount() : 0),
+      Object.keys(animals).length +
+        (typeof jungleStories === "undefined" ? 0 : jungleStories.length),
     ],
-    ["kompass", "Camp-Profi", count, 4, "Entdecke die vier Tiere der Lichtung."],
+    ["Fluss", "art/fund.svg#glocke", areas.river?.chapter || 0, 3],
+    ["Silben", "art/abzeichen.svg#blatt", paths, 3],
+    ["Post", "art/animals.svg#buch", areas.post?.count || 0, 5],
   ];
 }
-function showFinds() {
-  $("finds").replaceChildren();
-  const discovered = Object.keys(animals).filter((name) =>
-    data.stickers.includes(name),
+function firstTries(family, areas = areaState) {
+  const missions = Object.entries(family.observations || {})
+    .filter(([label]) => label.endsWith("im ersten Versuch"))
+    .reduce((sum, [, n]) => sum + n, 0);
+  const practice = Object.values(areas.practice || {}).reduce(
+    (sum, path) => sum + (path?.observations?.first || 0),
+    0,
   );
-  $("bookText").textContent =
-    discovered.length + " von 4 Tierfreunden entdeckt";
+  return missions + practice + (areas.river?.readings?.first || 0);
+}
+// Badges reward finding, solving alone and variety, never repeating the same thing.
+function badgesFor(family, areas = areaState) {
+  const tiles = areaTiles(family, areas);
+  const count = tiles[0][2];
+  const visited = tiles.filter(([, , n]) => n > 0).length;
+  return [
+    ["blatt", "Erster Fund", count, 1, "Entdecke ein Tier.", "art/animals.svg#affe"],
+    ["feder", "Tierduo", count, 2, "Entdecke zwei Tiere.", "art/animals.svg#frosch"],
+    [
+      "stern",
+      "Selbst gelöst",
+      firstTries(family, areas),
+      5,
+      "Löse fünf Aufgaben beim ersten Versuch.",
+      "art/abzeichen.svg#stern",
+    ],
+    [
+      "kompass",
+      "Drei Wege",
+      visited,
+      3,
+      "Entdecke drei Orte im Camp: Tiere, Fluss, Silben oder Post.",
+      "art/fund.svg#spur",
+    ],
+    ["kompass", "Camp-Profi", count, 4, "Entdecke die vier Tiere der Lichtung.", "art/animals.svg#jaguar"],
+  ];
+}
+function iconSvg(href) {
+  const pic = picture("affe");
+  pic.firstElementChild.setAttribute("href", href);
+  return pic;
+}
+async function showFinds() {
+  await loadAreas();
+  $("finds").replaceChildren();
+  const tiles = areaTiles(data);
+  const row = $("bookAreas");
+  row.replaceChildren();
+  for (const [label, href, count, goal] of tiles) {
+    const tile = document.createElement("div");
+    tile.className = "area-tile" + (count > 0 ? " started" : "");
+    tile.setAttribute("role", "img");
+    tile.setAttribute("aria-label", label + ": " + Math.min(count, goal) + " von " + goal);
+    const dots = document.createElement("span");
+    dots.className = "area-dots";
+    dots.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < goal; i++) {
+      const dot = document.createElement("i");
+      if (i < count) dot.className = "filled";
+      dots.append(dot);
+    }
+    const name = document.createElement("small");
+    name.textContent = label;
+    tile.append(iconSvg(href), dots, name);
+    row.append(tile);
+  }
   for (const [name, id] of Object.entries(animals)) {
     const { steps, rounds } = progressFor(data, name);
     const total = trailLengths[name];
@@ -214,9 +293,18 @@ function showFinds() {
     $("awards").append(badge);
   }
   const next = badges.find(([, , count, goal]) => count < goal);
-  $("bookGoal").textContent = next
-    ? "Nächstes Abzeichen · " + next[4]
-    : "Alle Abzeichen sind da!";
+  $("bookGoal").replaceChildren();
+  if (next) {
+    // A small picture sequence: the badge, an arrow, the place that earns it.
+    const badgeIcon = picture(next[0]);
+    badgeIcon.firstElementChild.setAttribute("href", "art/abzeichen.svg#" + next[0]);
+    const arrow = document.createElement("b");
+    arrow.textContent = "←";
+    arrow.setAttribute("aria-hidden", "true");
+    const text = document.createElement("span");
+    text.textContent = "Nächstes Abzeichen · " + next[4];
+    $("bookGoal").append(badgeIcon, arrow, iconSvg(next[5]), text);
+  } else $("bookGoal").textContent = "Alle Abzeichen sind da!";
 }
 const adventures = {
   Affe: {
@@ -256,16 +344,11 @@ function startAnimal(name, firstStep = 0) {
 function trailHelp() {
   attempt.help = true;
   const a = adventures[animalName];
-  $("model").textContent = a.syllable.toUpperCase();
-  visualHint(
+  $("model").textContent =
+    step === 3 ? a.start : a.syllable.toUpperCase();
+  guideTo(
     "trailChoices",
     step === 3 ? a.syllable[letters.length] : a.syllable,
-    2,
-  );
-  msg(
-    step === 3
-      ? "Erst M. Dann " + a.syllable[1] + "."
-      : "Finde " + a.syllable + ".",
   );
   if (voice(a.syllable)) play(a.syllable);
 }
@@ -357,22 +440,13 @@ function renderTrail() {
       ? [a.syllable, a.other]
       : [a.other, a.syllable];
   for (const choice of mixed(choices))
-    btn("trailChoices", choice.toUpperCase(), () => {
+    btn("trailChoices", choice.toUpperCase(), (ev) => {
       if (complete) return;
       const expected = assemble ? a.syllable[letters.length] : a.syllable;
       if (choice !== expected) {
         errors++;
-        visualHint("trailChoices", expected, errors);
-        $("model").textContent = assemble
-          ? (letters || "＿") + " · " + expected
-          : a.syllable;
-        msg(
-          errors > 1
-            ? "Tippe auf " + expected + "."
-            : animalName === "Affe"
-              ? "Schau auf den Stein."
-              : "Schau auf die Spur.",
-        );
+        missTap("trailChoices", expected, ev.currentTarget);
+        msg(errors > 1 ? "Schau auf den umrandeten Knopf." : "Schau nochmals hin.");
         if (voice(a.syllable)) play(a.syllable);
         return;
       }
@@ -409,6 +483,7 @@ function renderTrail() {
     }),
   );
   $("trailTools").lastElementChild.disabled = true;
+  $("trailTools").lastElementChild.classList.add("primary");
   if (voice(a.syllable)) play(a.syllable);
 }
 $("monkeyLink").onclick = () => startAnimal("Affe");

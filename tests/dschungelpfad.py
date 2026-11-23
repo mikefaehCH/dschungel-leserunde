@@ -71,25 +71,27 @@ with sync_playwright() as p:
             page.wait_for_function("(id)=>practiceData[id]?.active?.step===0",arg=id)
             for station in range(5):
                 if station<3:
+                    # Station 3 matches the syllable to a picture or a word.
+                    right={"MA":"MALER","MI":"MIKRO","LA":"LAMA"}[syllable] if station==2 else syllable
                     if station==0:
                         choice("MI" if syllable=="MA" else "MA")
-                        tool("Hilfe")
-                    choice(syllable)
+                        tool("? Hilfe")
+                    choice(right)
                 elif station==3:
                     choice(syllable[0]);choice(syllable[1])
                 else:
                     choice(word)
                 if station==2:
                     page.screenshot(path="/tmp/pfad-"+id+"-"+str(width)+".png")
-                tool("Weiter" if station<4 else "Mein Tierfund")
+                tool("➜ Weiter" if station<4 else "✓ Mein Tierfund")
                 if station<4:
                     page.wait_for_function("([id,n])=>practiceData[id]?.active?.step===n",arg=[id,station+1])
                 if station==1:
                     page.reload()
                     page.locator("#station-"+id+" button").click()
                     page.wait_for_function("(id)=>practiceData[id]?.active?.step===2",arg=id)
-            expect(page.locator("#practiceChoices").get_by_role("button",name="Nochmals",exact=True)).to_be_visible()
-            tool("Für heute fertig")
+            expect(page.locator("#practiceChoices").get_by_role("button",name="↻ Nochmals",exact=True)).to_be_visible()
+            tool("⌂ Für heute fertig")
             expect(page.locator("#station-"+id)).to_have_class("journey-stop ready discovered")
         page.locator("#bookLink").click()
         expect(page.locator("#bookText")).to_have_text("7 von 10 Tierfreunden entdeckt")

@@ -61,8 +61,10 @@ with sync_playwright() as p:
         def solve():
             k = t["kind"]
             if k == "klatschen":
-                for _ in t["word"].split("·"):
+                parts = t["word"].split("·")
+                for _ in parts:
                     choose("♩ Klatschen")
+                choose(str(len(parts)))
             elif k == "legen":
                 for c in t["word"]:
                     choose(c)
@@ -71,6 +73,10 @@ with sync_playwright() as p:
                 if n == 0:
                     choose(t["a"])
                     expect(page.locator("#feedback")).to_contain_text("nochmals")
+                    expect(page.locator("#feedback")).not_to_contain_text(expected)
+                    expect(choices.locator("button.miss")).to_have_count(1)
+                    choose(t["a"])
+                    expect(choices.locator("button.guide")).to_have_text(expected)
                 choose(expected)
             choose("✓ Tiermarke sammeln")
             expect(page.locator("#postTitle")).to_have_text("Deine Tiermarke")

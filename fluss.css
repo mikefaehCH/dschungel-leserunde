@@ -210,3 +210,11 @@ button.miss {
   width: 3.5rem;
   height: 3rem;
 }
+#riverScene .campfire {
+  position: absolute;
+  right: 6%;
+  bottom: 6%;
+  width: 26%;
+  max-width: 150px;
+  filter: drop-shadow(0 0 18px rgba(255, 170, 70, 0.75));
+}
