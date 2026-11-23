@@ -1,0 +1,233 @@
+#home {
+  display: block;
+}
+#home .clearing {
+  height: max(620px, calc(100svh - 100px));
+  border-radius: 20px;
+  isolation: isolate;
+}
+#home h1 {
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  color: #fff9dc;
+  text-shadow: 0 2px 3px #244d3d;
+  font-size: clamp(19px, 3.4vw, 32px);
+  line-height: 1.2;
+  pointer-events: none;
+}
+#home .place {
+  z-index: 1;
+  max-width: none;
+  width: clamp(100px, 17%, 170px);
+}
+#home .tukan {
+  left: 17%;
+  top: 28%;
+}
+#home .affe {
+  left: 81%;
+  top: 27%;
+}
+#home .frosch {
+  left: 17%;
+  top: 77%;
+}
+#home .jaguar {
+  left: 83%;
+  top: 63%;
+}
+#home .clearing aside {
+  left: 33%;
+  top: 33%;
+  width: 35%;
+  height: 46%;
+}
+#home .buch {
+  left: 51%;
+  top: 86%;
+  width: clamp(96px, 15%, 135px);
+}
+#home .werkstatt {
+  left: 50%;
+  top: 22%;
+  width: clamp(105px, 17%, 150px);
+  gap: 2px;
+}
+#home .werkstatt .animal {
+  width: 58px;
+  height: 48px;
+  padding: 5px;
+  background: #ecd5a3;
+  border-radius: 50%;
+  box-shadow: 0 2px 0 #85623d;
+}
+#home .werkstatt span,
+#home .river-place span,
+#home .post-place > span:last-child {
+  background: #efdbac;
+  border: 1px solid #98794c;
+  color: #3e4c32;
+  box-shadow: 0 3px 0 #806640;
+}
+#home .post-place {
+  display: grid;
+  margin: 0;
+  justify-items: center;
+  left: 17%;
+  top: 51%;
+  width: clamp(118px, 19%, 170px);
+  min-height: 100px;
+  gap: 8px;
+  border: 0;
+  text-align: center;
+  background: transparent;
+}
+#home .post-place > span:last-child {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+#home .post-place strong {
+  font-size: clamp(11px, 1.5vw, 15px);
+}
+#home .post-place small {
+  font-size: clamp(9px, 1.1vw, 11px);
+  line-height: 1.3;
+  letter-spacing: 0;
+  margin-top: 3px;
+}
+#home .postbox {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 85px;
+  height: 60px;
+  border: 4px solid #765539;
+  border-radius: 28px 28px 6px 6px;
+  background: #b97d45;
+  box-shadow: 0 3px 0 #365441;
+  padding: 0;
+}
+#home .postbox::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  width: 12px;
+  height: 40px;
+  background: #80603f;
+  z-index: -1;
+}
+#home .postbox i {
+  width: 44px;
+  height: 29px;
+  background:
+    linear-gradient(150deg, transparent 48%, #b4ae90 49% 52%, transparent 53%) left/50% 100%,
+    linear-gradient(210deg, transparent 48%, #b4ae90 49% 52%, transparent 53%) right/50% 100%,
+    #fff8df;
+  background-repeat: no-repeat;
+  border: 1px solid #c3b894;
+  border-radius: 3px;
+}
+#home .river-place {
+  left: 83%;
+  top: 87%;
+  width: clamp(118px, 19%, 180px);
+  min-height: 80px;
+}
+#home .river-place::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 75px;
+  background: #80603f;
+  z-index: -1;
+}
+#home .river-place span {
+  padding: 15px 20px 15px 12px;
+  font-weight: bold;
+  font-size: clamp(13px, 1.8vw, 18px);
+  white-space: nowrap;
+  border-radius: 4px;
+  clip-path: polygon(0 0, 87% 0, 100% 50%, 87% 100%, 0 100%);
+  background: repeating-linear-gradient(1deg, #efdbac 0 18px, #e4cd9a 19px 20px);
+}
+#home .parent-tools {
+  padding: 6px 4px 0;
+  text-align: right;
+}
+#home .parents {
+  margin: 0;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (min-width: 900px) and (max-height: 900px) and (orientation: landscape) {
+  #home .clearing {
+    min-height: 450px;
+  }
+  #home .place {
+    width: clamp(105px, 13%, 150px);
+  }
+  #home .tukan {
+    left: 16%;
+    top: 28%;
+  }
+  #home .affe {
+    left: 78%;
+    top: 28%;
+  }
+  #home .post-place {
+    left: 33%;
+    top: 58%;
+  }
+  #home .werkstatt {
+    left: 52%;
+    top: 22%;
+  }
+  #home .frosch {
+    left: 14%;
+    top: 77%;
+  }
+  #home .jaguar {
+    left: 84%;
+    top: 65%;
+  }
+  #home .river-place {
+    width: 180px;
+    left: 72%;
+    top: 86%;
+  }
+}
+@media (max-width: 490px) {
+  #home .clearing {
+    height: max(760px, calc(100svh - 72px));
+  }
+  #home h1 {
+    top: 16px;
+    left: 12px;
+    right: 12px;
+    font-size: 19px;
+  }
+  #home .post-place {
+    width: 110px;
+  }
+  #home .place span {
+    font-size: 11px;
+  }
+  #home .river-place {
+    left: 81%;
+    width: 110px;
+  }
+  #home .buch {
+    left: 49%;
+    width: 100px;
+  }
+  #home .werkstatt {
+    top: 19%;
+  }
+}
