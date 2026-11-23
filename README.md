@@ -28,6 +28,8 @@ Safari und die Home-Bildschirm-App können getrennte Speicher verwenden. Bei feh
 
 ## Dschungelpfad
 
+Ein durchgehender SVG-Weg verbindet die Lichtung und alle Tierstationen. Der Landschaftshorizont verlängert sich beim Herunterscrollen, ohne zusätzliche spielbare Inhalte vorzutäuschen. Der Elternzugang liegt direkt in der Lichtung. `tests/continuous_path.py` prüft den nahtlosen Übergang und die wachsende Landschaft.
+
 Unter der Lichtung führt ein scrollbarer Pfad zu sechs weiteren Tieren. Elefant und Schmetterling üben LA, Schildkröte und Faultier MA, Schlange und Krokodil MI. Jede Geschichte enthält drei Zuordnungen derselben Silbe, eine Buchstabenfolge und eine Wortaufgabe. Blumen, Brückenbretter, Spuren, Knoten oder Schilfnoten reagieren auf die Lösung.
 
 Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilbe als Mikes Stimme vorliegen. Im Stimmenstudio sind die Texte nach Tier geordnet. Nach dem Speichern folgt die nächste fehlende Szene desselben Tiers. MA, MI und LA werden aus dem bestehenden Paket wiederverwendet. Für alle sechs Geschichten sind 36 zusätzliche Szenenaufnahmen nötig.
