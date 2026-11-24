@@ -369,7 +369,14 @@ function practiceFinish() {
     practiceButton("⌂ Zum Dschungelpfad", () =>
       showJourneyPath(practiceStory.id),
     );
-  } else practiceButton("⇄ Andere Silbe", practiceHub);
+  } else {
+    const film = { MA: "mama", MI: "mimi", LA: "lama" }[practiceTarget];
+    if (film)
+      practiceButton("Film anschauen", () => openKino(film)).classList.add(
+        "kino-reward",
+      );
+    practiceButton("⇄ Andere Silbe", practiceHub);
+  }
   practiceButton("▤ Forscherbuch", () => navigate("book"));
   practiceButton("⌂ Für heute fertig", () => navigate("home"), "practiceTools");
 }

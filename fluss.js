@@ -479,6 +479,7 @@ function fire(frame) {
   if (voice(audio)) play(audio);
   else if (frame === 2 && voice("fluss-lama")) play("fluss-lama");
   if (frame < 4) riverButton("➜ Nächstes Bild", () => fire(frame + 1));
+  riverButton("Lagerfeuer-Kino", () => openKino(), "feuer");
   riverButton("Für heute fertig", () => navigate("home"));
 }
 $("riverLink").onclick = () => openRiver();

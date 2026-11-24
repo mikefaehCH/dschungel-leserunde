@@ -1,0 +1,50 @@
+name: Camp quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: camp-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CAMP_TEST_PASSWORD: ${{ secrets.CAMP_TEST_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: JavaScript und Python prüfen
+        run: |
+          for file in *.js; do node --check "$file"; done
+          python -m py_compile tests/*.py tools/*.py
+      - name: Öffentliche Camp-Abläufe prüfen
+        run: |
+          python tests/tagespost.py
+          python tests/startszene.py
+          python tests/homescreen_audio.py
+          python tests/silbenpfad.py
+          python tests/dschungelpfad.py
+          python tests/continuous_path.py
+          python tests/rueckmeldung.py
+          python tests/forscherbuch.py
+          python tests/szenen.py
+          python tests/kino.py
+      - name: Geschützte Studio-Abläufe prüfen
+        if: ${{ env.CAMP_TEST_PASSWORD != '' }}
+        run: |
+          python tests/camp_browser.py
+          python tests/voice_bundle.py
+          python tests/stimmen.py
+          python tests/sicherung.py

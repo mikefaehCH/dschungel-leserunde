@@ -47,6 +47,7 @@ with sync_playwright() as p:
         page.locator("#nav button").last.click()
         page.locator("#options").get_by_role("button", name="Echo zurückgeben").click()
         page.locator("#nav button").last.click()
+        page.wait_for_function("stage===2")
         check("options", "nav")
         page.evaluate("stage=4;render()")
         expect(page.locator("#options button")).to_have_count(0)
