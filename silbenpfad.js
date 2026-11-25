@@ -250,8 +250,8 @@ function practiceTask() {
   function hint() {
     if (solved) return;
     helped = true;
-    if (building) model.textContent = built ? built + " " + path.letters[1] : path.letters[0] + " ＿";
     together.hidden = false;
+    if (building) model.textContent = built ? built + " " + path.letters[1] : path.letters[0] + " ＿";
     else if (listening) model.textContent = target;
     else if (inWord)
       model.replaceChildren(
