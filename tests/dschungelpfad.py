@@ -1,4 +1,4 @@
-"""Check narration gates, all six stories, resume and retained discoveries."""
+"""Check narration gates, all ten stories, resume and retained discoveries."""
 import base64
 import io
 import math
@@ -13,6 +13,8 @@ from playwright.sync_api import sync_playwright, expect
 root = Path(__file__).resolve().parents[1]
 url = "https://mikefaehch.github.io/dschungel-leserunde/"
 cases = [
+    ("fledermaus", "MI", "MIMI"),
+    ("tapir", "LA", "LAMA"),
     ("kolibri", "LA", "LAMA"),
     ("otter", "MA", "MAMA"),
     ("elefant", "LA", "LAMA"),
@@ -46,8 +48,9 @@ with sync_playwright() as p:
         errors=[]
         page.on("pageerror",lambda error:errors.append(str(error)))
         page.goto(url)
-        expect(page.locator("#journeyStops .waiting")).to_have_count(8)
-        expect(page.locator("#journeyStops button:disabled")).to_have_count(8)
+        page.wait_for_function("document.querySelector('.camp-logo')?.naturalWidth === 180")
+        expect(page.locator("#journeyStops .waiting")).to_have_count(10)
+        expect(page.locator("#journeyStops button:disabled")).to_have_count(10)
         # Existing files without Mike's approval must keep a story grey.
         page.evaluate("""async clip=>{
             const clips=Object.fromEntries(jungleStories.flatMap(s=>storyRecordings(s)).concat(['ma','mi','la']).map(k=>[k,clip]));
@@ -56,14 +59,14 @@ with sync_playwright() as p:
             await new Promise(resolve=>tx.oncomplete=resolve);
         }""",clip)
         page.reload()
-        expect(page.locator("#journeyStops .waiting")).to_have_count(8)
+        expect(page.locator("#journeyStops .waiting")).to_have_count(10)
         page.evaluate("""async ()=>{
             const tx=db.transaction('app','readwrite');const st=tx.objectStore('app');const r=st.get('family');
             r.onsuccess=()=>{const v=r.result;v.mikeKeys=Object.keys(v.clips);st.put(v,'family')};
             await new Promise(resolve=>tx.oncomplete=resolve);
             window.dispatchEvent(new Event('focus'));
         }""")
-        expect(page.locator("#journeyStops .ready")).to_have_count(8)
+        expect(page.locator("#journeyStops .ready")).to_have_count(10)
         def choice(name, container="practiceChoices"):
             page.locator("#"+container).get_by_role("button",name=name,exact=True).click()
         def tool(name): choice(name,"practiceTools")
@@ -80,7 +83,8 @@ with sync_playwright() as p:
                         tool("? Hilfe")
                     choice(right)
                 elif station==3:
-                    tool("? Hilfe"); tool("Zusammen legen")
+                    choice(syllable[1]); choice(syllable[1])
+                    tool("Zusammen legen")
                     expect(page.locator("#practiceModel")).to_contain_text(syllable[0])
                     choice(syllable[1])
                 else:
@@ -98,8 +102,8 @@ with sync_playwright() as p:
             tool("⌂ Für heute fertig")
             expect(page.locator("#station-"+id)).to_have_class("journey-stop ready discovered")
         page.locator("#bookLink").click()
-        expect(page.locator("#bookText")).to_have_text("9 von 12 Tierfreunden entdeckt")
-        expect(page.locator("#journeyFinds .discovered")).to_have_count(8)
+        expect(page.locator("#bookText")).to_have_text("11 von 14 Tierfreunden entdeckt")
+        expect(page.locator("#journeyFinds .discovered")).to_have_count(10)
         assert page.evaluate("readPost('family').then(v=>v.testMarker)")=="keep"
         assert page.evaluate("readPost('family').then(v=>v.stickers)")==["Frosch"]
         saved=page.evaluate("readPost('tierpfad:v1')")
@@ -117,10 +121,10 @@ with sync_playwright() as p:
         }""")
         page.reload()
         expect(page.locator("#station-elefant button")).to_be_disabled()
-        expect(page.locator("#journeyStops .ready")).to_have_count(7)
+        expect(page.locator("#journeyStops .ready")).to_have_count(9)
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth")
         assert not errors,errors
-        print("PASS",width,height,"acht Geschichten; Stimmfreigabe; Resume; Funde; Wiederholen; fehlender Schlussclip",flush=True)
+        print("PASS",width,height,"zehn Geschichten; Stimmfreigabe; Resume; Funde; Wiederholen; fehlender Schlussclip",flush=True)
         ctx.close()
     if os.getenv("CAMP_TEST_PASSWORD"):
         ctx = browser.new_context(viewport={"width":744,"height":1133},ignore_https_errors=True)
@@ -145,7 +149,7 @@ with sync_playwright() as p:
         expect(page.locator("#readiness")).to_contain_text("Krokodil 7/7")
         page.goto(url)
         expect(page.locator("#station-krokodil button")).to_be_enabled()
-        expect(page.locator("#journeyStops .waiting")).to_have_count(7)
+        expect(page.locator("#journeyStops .waiting")).to_have_count(9)
         print("PASS Elternkarten; sechs zusammenhängende Aufnahmen; Tier wird farbig",flush=True)
         ctx.close()
     browser.close()

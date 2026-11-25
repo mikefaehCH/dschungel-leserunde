@@ -131,7 +131,7 @@ function setStoryScene(story, count) {
   for (let i = 0; i < 5; i++) {
     const piece = document.createElement("i");
     piece.className = i < count ? "found" : "";
-    piece.textContent = ["schildkroete", "schmetterling", "kolibri"].includes(story.id)
+    piece.textContent = story.id === "fledermaus" ? "★" : story.id === "tapir" ? "🐚" : ["schildkroete", "schmetterling", "kolibri"].includes(story.id)
       ? "✿"
       : story.id === "krokodil"
         ? "♪"

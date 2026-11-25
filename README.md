@@ -30,11 +30,11 @@ Safari und die Home-Bildschirm-App können getrennte Speicher verwenden. Bei feh
 
 Ein durchgehender SVG-Weg verbindet die Lichtung und alle Tierstationen. Der Landschaftshorizont verlängert sich beim Herunterscrollen, ohne zusätzliche spielbare Inhalte vorzutäuschen. Der Elternzugang liegt direkt in der Lichtung. `tests/continuous_path.py` prüft den nahtlosen Übergang und die wachsende Landschaft.
 
-Unter der Lichtung führt ein scrollbarer Pfad zu sechs weiteren Tieren. Elefant und Schmetterling üben LA, Schildkröte und Faultier MA, Schlange und Krokodil MI. Jede Geschichte enthält drei Zuordnungen derselben Silbe, eine Buchstabenfolge und eine Wortaufgabe. Blumen, Brückenbretter, Spuren, Knoten oder Schilfnoten reagieren auf die Lösung.
+Unter der Lichtung führt ein scrollbarer Pfad zu zehn weiteren Tieren. Elefant und Schmetterling üben LA, Schildkröte und Faultier MA, Schlange und Krokodil MI. Jede Geschichte enthält drei Zuordnungen derselben Silbe, eine Buchstabenfolge und eine Wortaufgabe. Blumen, Brückenbretter, Spuren, Knoten oder Schilfnoten reagieren auf die Lösung.
 
-Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilbe als Mikes Stimme vorliegen. Im Stimmenstudio sind die Texte nach Tier geordnet. Nach dem Speichern folgt die nächste fehlende Szene desselben Tiers. MA, MI und LA werden aus dem bestehenden Paket wiederverwendet. Für alle sechs Geschichten sind 36 zusätzliche Szenenaufnahmen nötig.
+Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilbe als Mikes Stimme vorliegen. Im Stimmenstudio sind die Texte nach Tier geordnet. Nach dem Speichern folgt die nächste fehlende Szene desselben Tiers. MA, MI und LA werden aus dem bestehenden Paket wiederverwendet. Jede weitere Geschichte benötigt sechs eigene Szenenaufnahmen.
 
-Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Kolibri (LA) und Otter (MA) verlängern den Pfad auf acht Geschichten. Nach «Hilfe» kann das Kind eine Auswahl gemeinsam lösen oder beim Bauen genau den nächsten Buchstaben einsetzen lassen. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
+Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Kolibri und Tapir üben LA, Otter übt MA und Fledermaus übt MI. Nach zwei Fehlversuchen erscheint die gemeinsame Lösung auch ohne Öffnen der Hilfe. Nach «Hilfe» kann das Kind eine Auswahl gemeinsam lösen oder beim Bauen genau den nächsten Buchstaben einsetzen lassen. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
 
 ## Lagerfeuer-Kino
 

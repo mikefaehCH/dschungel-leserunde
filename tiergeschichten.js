@@ -113,6 +113,36 @@ const jungleStories = [
       "Das Segel fängt den Wind. Mama winkt und der Otter legt bei ihr an.",
     ],
   },
+  {
+    id: "fledermaus",
+    name: "Fledermaus",
+    title: "Die Sternenprobe",
+    syllable: "MI",
+    ending: "Sterne für Mimi",
+    scenes: [
+      "Die Fledermaus ruft MI. Findest du ihr Echo?",
+      "Mira lauscht am Baum. Wie beginnt MIRA?",
+      "Mira braucht ein Mikro. Welches Wort beginnt mit MI?",
+      "Zwei Sterne fehlen. Lege M und dann I.",
+      "Mimi singt mit. Finde ihren Namen MIMI.",
+      "Fünf Sterne funkeln. Mimi singt und die Fledermaus tanzt durch die Nacht.",
+    ],
+  },
+  {
+    id: "tapir",
+    name: "Tapir",
+    title: "Die Muschelpost",
+    syllable: "LA",
+    ending: "Die Muschelkette ist fertig",
+    scenes: [
+      "Der Tapir findet eine Muschel. Hör auf LA. Wo ist LA?",
+      "Eine Lampe beleuchtet das Ufer. Wie beginnt LAMPE?",
+      "Wer bekommt die Muscheln? Tippe auf das Tier mit LA am Anfang.",
+      "Auf die Kette kommt ein Schild. Lege L und dann A.",
+      "Der Tapir sucht das Lama. Auf welchem Schild steht LAMA?",
+      "Das Lama trägt die fertige Muschelkette. Bei jedem Schritt klappert sie leise.",
+    ],
+  },
 ];
 function storyClip(story, step) {
   return "tier-" + story.id + "-" + step;
