@@ -89,6 +89,30 @@ const jungleStories = [
       "Mimi singt und das Krokodil begleitet sie. Sogar der Frosch hört zu. Das Schilfkonzert beginnt.",
     ],
   },
+  {
+    id: "kolibri", name: "Kolibri", title: "Die Laternenblüte",
+    syllable: "LA", ending: "Licht für das Lama",
+    scenes: [
+      "Der Kolibri sucht eine leuchtende Blüte. Hör auf LA.",
+      "Unter der Lampe summt es. Wo beginnt LAMPE mit LA?",
+      "Wer wartet an der Blüte? Tippe auf das Tier mit LA am Anfang.",
+      "Die Blüte ist noch zu. Lege zuerst L und dann A.",
+      "Der Kolibri bringt das Licht zum Lama. Findest du LAMA?",
+      "Die Blüte geht auf. Ihr Licht zeigt dem Lama den Heimweg.",
+    ],
+  },
+  {
+    id: "otter", name: "Otter", title: "Das Floss aus Rinde",
+    syllable: "MA", ending: "Das Floss legt an",
+    scenes: [
+      "Der Otter baut ein Floss. Auf seinem Rindenstück steht MA. Finde MA.",
+      "Ein Maler bemalt das Segel. Wie beginnt MALER?",
+      "Wer hat den Pinsel? Tippe auf das Bild, das mit MA beginnt.",
+      "Jetzt kommt das Segel ans Floss. Lege M und A.",
+      "Mama wartet am Ufer. Auf welchem Schild steht MAMA?",
+      "Das Segel fängt den Wind. Mama winkt und der Otter legt bei ihr an.",
+    ],
+  },
 ];
 function storyClip(story, step) {
   return "tier-" + story.id + "-" + step;

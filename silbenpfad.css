@@ -105,3 +105,15 @@
     padding: 10px 14px;
   }
 }
+
+#practiceTools button {
+  min-height: 46px;
+}
+#practiceTools .primary:enabled {
+  outline: 3px solid #35573e;
+  outline-offset: 2px;
+}
+#practice :is(button, a):focus-visible {
+  outline: 4px solid #19496a;
+  outline-offset: 3px;
+}

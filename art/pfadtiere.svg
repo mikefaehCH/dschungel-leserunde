@@ -66,4 +66,23 @@
     <path d="M42 78v9m30-9v9" stroke="#648b59" stroke-width="10" stroke-linecap="round"/>
     <path d="M17 91h95" stroke="#82b3a2" stroke-width="3" stroke-linecap="round"/>
   </symbol>
+  <symbol id="kolibri" viewBox="0 0 120 100">
+    <path fill="#256d73" d="M40 64 9 85l14-22-15 2 29-19z"/>
+    <path fill="#45a98c" d="M25 55q19 28 45-2l11-16-17-11z"/>
+    <path fill="#8cd5af" d="M54 51Q19 43 16 7q29 10 38 44"/>
+    <circle cx="75" cy="36" r="15" fill="#38958b"/>
+    <path fill="#433b3a" d="m87 32 30-6-29 12z"/>
+    <path fill="#ee897d" d="M64 43q9 8 18 4-7 14-19 12z"/>
+    <circle cx="80" cy="32" r="3" fill="#253d3d"/>
+  </symbol>
+  <symbol id="otter" viewBox="0 0 120 100">
+    <path fill="#885438" d="M50 64Q22 87 4 64q2 24 30 19l27-10z"/>
+    <ellipse cx="59" cy="65" rx="33" ry="18" fill="#a46a45"/>
+    <circle cx="78" cy="45" r="21" fill="#a46a45"/>
+    <circle cx="64" cy="30" r="7" fill="#905d40"/><circle cx="90" cy="29" r="7" fill="#905d40"/>
+    <ellipse cx="82" cy="51" rx="15" ry="9" fill="#f0c694"/>
+    <path d="m78 46 8 0-4 5z" fill="#382e29"/>
+    <g fill="#382e29"><circle cx="73" cy="40" r="2.8"/><circle cx="89" cy="40" r="2.8"/></g>
+    <path d="m68 49-13-3m13 7-13 2m40-5 13-4m-13 8 13 2" stroke="#594233" stroke-width="2"/>
+  </symbol>
 </svg>
