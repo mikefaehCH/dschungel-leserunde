@@ -269,7 +269,10 @@ function practiceTask() {
         mistakes++;
         missTap("practiceChoices", goal(), button);
         msg(building ? "Schau auf den nächsten Buchstaben." : "Schau nochmals.");
-        if (mistakes >= 2) helped = true;
+        if (mistakes >= 2) {
+          helped = true;
+          together.hidden = false;
+        }
         return;
       }
       if (building) {
@@ -291,6 +294,7 @@ function practiceTask() {
       practiceProgress(index + 1);
       setStoryScene(practiceStory, index + 1);
       together.hidden = true;
+      helpButton.hidden = true;
       next.disabled = false;
       msg("Ein Schritt geschafft!");
     });
@@ -308,7 +312,7 @@ function practiceTask() {
       () => play(target.toLowerCase()),
       "practiceTools",
     );
-  practiceButton("? Hilfe", hint, "practiceTools");
+  const helpButton = practiceButton("? Hilfe", hint, "practiceTools");
   const together = practiceButton("Zusammen legen", () => {
     if (solved) return;
     helped = true;

@@ -150,7 +150,7 @@ with sync_playwright() as p:
         }""")
         page.reload()
         click("bookLink")
-        expect(page.locator("#bookText")).to_contain_text("1 von 12")
+        expect(page.locator("#bookText")).to_contain_text("1 von 14")
         expect(page.locator("#awards .earned")).to_have_count(1)
         click("homeLink")
         click("monkeyLink")
