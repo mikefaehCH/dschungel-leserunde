@@ -34,7 +34,7 @@ Unter der Lichtung führt ein scrollbarer Pfad zu sechs weiteren Tieren. Elefant
 
 Neue Tiere sind grau, bis die sechs Szenentexte der Geschichte und ihre Zielsilbe als Mikes Stimme vorliegen. Im Stimmenstudio sind die Texte nach Tier geordnet. Nach dem Speichern folgt die nächste fehlende Szene desselben Tiers. MA, MI und LA werden aus dem bestehenden Paket wiederverwendet. Für alle sechs Geschichten sind 36 zusätzliche Szenenaufnahmen nötig.
 
-Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
+Angefangene Tierbesuche und frühere Funde liegen unter dem eigenen Speicherschlüssel tierpfad:v1. Das Forscherbuch zeigt die zusätzlichen Tierfreunde. Kolibri (LA) und Otter (MA) verlängern den Pfad auf acht Geschichten. Nach «Hilfe» kann das Kind eine Auswahl gemeinsam lösen oder beim Bauen genau den nächsten Buchstaben einsetzen lassen. Weitere Geschichten können über tiergeschichten.js ergänzt werden.
 
 ## Lagerfeuer-Kino
 

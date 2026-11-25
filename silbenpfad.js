@@ -250,7 +250,8 @@ function practiceTask() {
   function hint() {
     if (solved) return;
     helped = true;
-    if (building) model.textContent = (built || "＿") + " " + path.letters[1];
+    if (building) model.textContent = built ? built + " " + path.letters[1] : path.letters[0] + " ＿";
+    together.hidden = false;
     else if (listening) model.textContent = target;
     else if (inWord)
       model.replaceChildren(
@@ -289,6 +290,7 @@ function practiceTask() {
       scene.querySelector(".animal").classList.add("pose-pop");
       practiceProgress(index + 1);
       setStoryScene(practiceStory, index + 1);
+      together.hidden = true;
       next.disabled = false;
       msg("Ein Schritt geschafft!");
     });
@@ -297,6 +299,7 @@ function practiceTask() {
       button.setAttribute("aria-label", answer);
       button.classList.add("picture-choice");
     }
+    button.dataset.answer = answer;
     buttons.push(button);
   }
   if (sound)
@@ -306,6 +309,13 @@ function practiceTask() {
       "practiceTools",
     );
   practiceButton("? Hilfe", hint, "practiceTools");
+  const together = practiceButton("Zusammen legen", () => {
+    if (solved) return;
+    helped = true;
+    buttons.find((button) => button.dataset.answer === goal())?.click();
+  }, "practiceTools");
+  if (!building) together.textContent = "Zusammen finden";
+  together.hidden = true;
   practiceButton("↻ Nochmals", practiceTask, "practiceTools");
   const next = practiceButton(
     index === 4

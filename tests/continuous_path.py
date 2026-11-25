@@ -23,7 +23,7 @@ with sync_playwright() as p:
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.goto(url)
-        expect(page.locator("#journeyStops button:disabled")).to_have_count(6)
+        expect(page.locator("#journeyStops button:disabled")).to_have_count(8)
         page.wait_for_function("document.querySelector('#continuousPath path').hasAttribute('d')")
         geometry = page.evaluate("""() => {
             const clearing = document.querySelector('.clearing').getBoundingClientRect();
@@ -43,7 +43,7 @@ with sync_playwright() as p:
             previous = page.locator("#journeyBeyond").evaluate("el => el.offsetHeight")
             page.locator("#journeyHorizon").scroll_into_view_if_needed()
             page.wait_for_function("old => document.querySelector('#journeyBeyond').offsetHeight > old", arg=previous)
-        expect(page.locator("#journeyStops .journey-stop")).to_have_count(6)
+        expect(page.locator("#journeyStops .journey-stop")).to_have_count(8)
         page.locator("#journeyTop").click()
         page.wait_for_function("scrollY < 50")
         assert not errors, errors
