@@ -72,6 +72,14 @@ with sync_playwright() as p:
         image.src = src;
     })""", touch_icon.get_attribute("href")) == [180, 180]
     expect(page.locator("#voiceSetup")).to_be_visible()
+    for width, height in [(1024, 720), (1133, 744), (744, 1133), (375, 667)]:
+        page.set_viewport_size({"width": width, "height": height})
+        assert page.evaluate("""() => {
+            const rect = selector => document.querySelector(selector).getBoundingClientRect();
+            const scene = rect('.clearing');
+            return rect('#voiceSetup').top >= scene.bottom - 1 &&
+                   rect('#bookCount').bottom <= scene.bottom;
+        }"""), (width, height)
     page.get_by_role("link", name="Stimme einrichten", exact=True).click()
     expect(page.locator("form")).to_be_visible()
     assert page.locator('link[rel="manifest"]').get_attribute("href") == "manifest.webmanifest"
