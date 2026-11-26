@@ -39,6 +39,7 @@ jobs:
           python tests/continuous_path.py
           python tests/rueckmeldung.py
           python tests/forscherbuch.py
+          python tests/buchstabentafel.py
           python tests/szenen.py
           python tests/kino.py
       - name: Geschützte Studio-Abläufe prüfen
