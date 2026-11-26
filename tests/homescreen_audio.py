@@ -62,6 +62,15 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto(url)
+    touch_icon = page.locator('link[rel="apple-touch-icon"]')
+    assert touch_icon.get_attribute("href") == "art/camp-icon-180.png"
+    assert touch_icon.get_attribute("sizes") == "180x180"
+    assert page.evaluate("""src => new Promise(resolve => {
+        const image = new Image();
+        image.onload = () => resolve([image.naturalWidth, image.naturalHeight]);
+        image.onerror = () => resolve([]);
+        image.src = src;
+    })""", touch_icon.get_attribute("href")) == [180, 180]
     expect(page.locator("#voiceSetup")).to_be_visible()
     page.get_by_role("link", name="Stimme einrichten", exact=True).click()
     expect(page.locator("form")).to_be_visible()
