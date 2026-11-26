@@ -21,7 +21,7 @@
 #home .parent-tools {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: auto;
   right: 0;
   display: flex;
   align-items: end;
@@ -35,7 +35,17 @@
   padding: 4px 10px;
 }
 #voiceSetup {
-  max-width: 75%;
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: left;
+}
+#home .buch {
+  top: auto;
+  bottom: 12px;
+  transform: translateX(-50%);
+}
+#home .buch .animal {
+  height: clamp(54px, 9svh, 86px);
 }
 .path-invite {
   display: none;
